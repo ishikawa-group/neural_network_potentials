@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# opencatalystproject
-=======
 # Open Catalyst Project
 * This repository is to install, use, and do fine-tuning of Neural Network Potentials (NNPs) in Open Catalyst Project (OCP).
 * The OCP repository:
@@ -119,4 +116,3 @@ print("Size of the dataset created:", len(dataset))
 print(dataset[0])
 ```
 
->>>>>>> master
