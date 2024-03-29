@@ -4,13 +4,15 @@
 * Here, the procedures for installing, data generation, and fine-tuning are shown by step by step.
 
 ## Install
+* need to be python 3.11.X
+
 1. `git clone https://github.com/Open-Catalyst-Project/ocp.git`
 2. `pip install --upgrade pip`
 3. `pip install torch==2.0.1`
-4. `pip install lmdb==1.1.1 ase==3.21 pymatgen==2020.12.31 pyyaml==6.0.1 tensorboard==2.15.1 wandb==0.16.0`
+4. `pip install lmdb==1.1.1 ase==3.21 pymatgen==2022.1.8 pyyaml==6.0.1 tensorboard==2.15.1 wandb==0.16.0`
 5. `pip install torch_scatter torch_sparse torch_cluster torch_spline_conv torch_geometric -f https://data.pyg.org/whl/torch-2.0.1+cpu.html`
 6. `pip install ipython orjson numba e3nn protobuf`
-7. `cd ocp_original` thne `pip install -e .`
+7. `cd ocp_original` then `pip install -e .`
 
 ### download the training data (if you don't have)
 ```bash
