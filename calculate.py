@@ -21,7 +21,7 @@ checkpoint = "gndt_oc22_all_s2ef.pt"
 
 # odac23 --- does not work well?
 
-checkpoint_dir = "./downloaded_checkpoint/oc22/"
+checkpoint_dir = "./downloaded_checkpoints/oc22/"
 checkpoint_path = checkpoint_dir + checkpoint
 #config_yml = "gemnet-dT.yml"
 trainer = "forces"  # for S2EF
