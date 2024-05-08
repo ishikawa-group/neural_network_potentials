@@ -1,3 +1,4 @@
 checkpoints/
 downloaded_checkpoints/
 tmp.*
+*.traj
