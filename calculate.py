@@ -18,7 +18,7 @@ checkpoint_path = checkpoint_dir + checkpoint
 trainer = "forces"  # for S2EF
 
 # Construct a sample structure
-adslab = fcc100("Cu", size=(3, 3, 3))
+adslab = fcc100("Cu", size=(4, 4, 4))
 adsorbate = molecule("C3H8")
 add_adsorbate(adslab, adsorbate, 3, offset=(1, 1))
 tags = np.zeros(len(adslab))
