@@ -1,12 +1,14 @@
 from ocpmodels.common.relaxation.ase_utils import OCPCalculator
-import ase.io
+import os
+import numpy as np
 from ase.optimize import BFGS
 from ase.build import fcc100, add_adsorbate, molecule
 from ase.constraints import FixAtoms
 from ase.calculators.emt import EMT
-
-import os
-import numpy as np
+from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+from ase.md.langevin import Langevin
+from ase import units
+from ase.io import Trajectory
 
 # odac23 does not work well?
 checkpoint = "gndt_oc22_all_s2ef.pt"
@@ -36,6 +38,14 @@ calc = OCPCalculator(checkpoint_path=checkpoint_path, trainer=trainer)
 # Set up the calculator
 adslab.calc = calc
 
-opt = BFGS(adslab, trajectory="test.traj")
+# Geometry optimization
+#opt = BFGS(adslab, trajectory="test.traj")
+#opt.run(fmax=0.05, steps=100)
 
-opt.run(fmax=0.05, steps=100)
+# Molecular dynamics
+temperature_K = 300
+MaxwellBoltzmannDistribution(adslab, temperature_K=temperature_K)
+dyn = Langevin(adslab, timestep=1.0*units.fs, temperature_K=temperature_K, friction=0.01/units.fs)
+traj = Trajectory("test.traj", "w", adslab)
+dyn.attach(traj.write, interval=1)
+dyn.run(100)
