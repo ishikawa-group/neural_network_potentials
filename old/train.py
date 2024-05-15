@@ -3,12 +3,12 @@ from ocpmodels.datasets import LmdbDataset
 from ocpmodels import models
 from ocpmodels.common import logger
 from ocpmodels.common.utils import setup_logging, setup_imports
-setup_logging()
-setup_imports()
-
 import numpy as np
 import copy
 import os
+
+setup_logging()
+setup_imports()
 
 train_src = "data/s2ef/train_100"
 val_src = "data/s2ef/val_20"
@@ -144,4 +144,3 @@ trainer = OCPTrainer(
 
 # train the model
 trainer.train()
-

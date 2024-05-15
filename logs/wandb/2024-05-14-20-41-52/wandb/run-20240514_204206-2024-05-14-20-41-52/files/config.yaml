@@ -1,0 +1,163 @@
+wandb_version: 1
+
+task:
+  desc: null
+  value:
+    dataset: trajectory_lmdb
+    description: Regressing to energies and forces for DFT trajectories from OCP
+    type: regression
+    metric: mae
+    labels:
+    - potential energy
+    grad_input: atomic forces
+    train_on_free_atoms: true
+    eval_on_free_atoms: true
+trainer:
+  desc: null
+  value: s2ef
+model:
+  desc: null
+  value: schnet
+model_attributes:
+  desc: null
+  value:
+    hidden_channels: 1024
+    num_filters: 256
+    num_interactions: 5
+    num_gaussians: 200
+    cutoff: 6.0
+    use_pbc: true
+outputs:
+  desc: null
+  value:
+    energy:
+      level: system
+    forces:
+      level: atom
+      train_on_free_atoms: true
+      eval_on_free_atoms: true
+optim:
+  desc: null
+  value:
+    batch_size: 20
+    eval_batch_size: 20
+    eval_every: 10000
+    num_workers: 0
+    lr_initial: 0.0001
+    lr_gamma: 0.1
+    lr_milestones:
+    - 313907
+    - 523179
+    - 732451
+    warmup_steps: 209271
+    warmup_factor: 0.2
+    max_epochs: 15
+    force_coefficient: 30
+loss_fns:
+  desc: null
+  value:
+  - energy:
+      fn: mae
+      coefficient: 1
+  - forces:
+      fn: l2mae
+      coefficient: 30
+eval_metrics:
+  desc: null
+  value:
+    metrics:
+      misc:
+      - energy_forces_within_threshold
+      energy:
+      - mae
+      forces:
+      - forcesx_mae
+      - forcesy_mae
+      - forcesz_mae
+      - mae
+      - cosine_similarity
+      - magnitude_error
+logger:
+  desc: null
+  value: wandb
+amp:
+  desc: null
+  value: false
+gpus:
+  desc: null
+  value: 0
+cmd:
+  desc: null
+  value:
+    identifier: ''
+    print_every: 10
+    seed: 0
+    timestamp_id: 2024-05-14-20-41-52
+    commit: null
+    checkpoint_dir: ./checkpoints/2024-05-14-20-41-52
+    results_dir: ./results/2024-05-14-20-41-52
+    logs_dir: ./logs/wandb/2024-05-14-20-41-52
+slurm:
+  desc: null
+  value: {}
+noddp:
+  desc: null
+  value: false
+dataset:
+  desc: null
+  value:
+    src: data/s2ef/mytrain/
+    normalize_labels: true
+    target_mean: -0.7554450631141663
+    target_std: 2.887317180633545
+    grad_target_mean: 0.0
+    grad_target_std: 2.887317180633545
+    format: trajectory_lmdb
+    key_mapping:
+      y: energy
+      force: forces
+    transforms:
+      normalizer:
+        energy:
+          mean: -0.7554450631141663
+          stdev: 2.887317180633545
+        forces:
+          mean: 0.0
+          stdev: 2.887317180633545
+val_dataset:
+  desc: null
+  value:
+    src: data/s2ef/myval/
+_wandb:
+  desc: null
+  value:
+    python_version: 3.11.8
+    cli_version: 0.16.6
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: true
+    start_time: 1715686926.0
+    t:
+      1:
+      - 1
+      - 55
+      - 77
+      - 105
+      2:
+      - 1
+      - 55
+      - 77
+      - 105
+      3:
+      - 1
+      - 14
+      - 16
+      - 23
+      - 61
+      4: 3.11.8
+      5: 0.16.6
+      8:
+      - 2
+      - 4
+      - 5
+      13: darwin-arm64

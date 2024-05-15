@@ -1,0 +1,28 @@
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_setup.py:_flush():76] Current SDK version is 0.16.6
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_setup.py:_flush():76] Configure stats pid to 49211
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_setup.py:_flush():76] Loading settings from /Users/ishi/.config/wandb/settings
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_setup.py:_flush():76] Loading settings from /Users/ishi/opencatalystproject/wandb/settings
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'main.py', 'program_abspath': '/Users/ishi/opencatalystproject/main.py', 'program': '/Users/ishi/opencatalystproject/main.py'}
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_setup.py:_flush():76] Applying login settings: {}
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_setup.py:_flush():76] Applying login settings: {'mode': 'offline'}
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_init.py:_log_setup():521] Logging user logs to ./logs/wandb/2024-05-14-20-31-12/wandb/offline-run-20240514_203036-2024-05-14-20-31-12/logs/debug.log
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_init.py:_log_setup():522] Logging internal logs to ./logs/wandb/2024-05-14-20-31-12/wandb/offline-run-20240514_203036-2024-05-14-20-31-12/logs/debug-internal.log
+2024-05-14 20:30:36,031 INFO    MainThread:49211 [wandb_init.py:init():561] calling init triggers
+2024-05-14 20:30:36,032 INFO    MainThread:49211 [wandb_init.py:init():568] wandb.init called with sweep_config: {}
+config: {'task': {'dataset': 'trajectory_lmdb', 'description': 'Regressing to energies and forces for DFT trajectories from OCP', 'type': 'regression', 'metric': 'mae', 'labels': ['potential energy'], 'grad_input': 'atomic forces', 'train_on_free_atoms': True, 'eval_on_free_atoms': True}, 'trainer': 's2ef', 'model': 'schnet', 'model_attributes': {'hidden_channels': 1024, 'num_filters': 256, 'num_interactions': 5, 'num_gaussians': 200, 'cutoff': 6.0, 'use_pbc': True}, 'outputs': {'energy': {'level': 'system'}, 'forces': {'level': 'atom', 'train_on_free_atoms': True, 'eval_on_free_atoms': True}}, 'optim': {'batch_size': 20, 'eval_batch_size': 20, 'eval_every': 10000, 'num_workers': 0, 'lr_initial': 0.0001, 'lr_gamma': 0.1, 'lr_milestones': [313907, 523179, 732451], 'warmup_steps': 209271, 'warmup_factor': 0.2, 'max_epochs': 15, 'force_coefficient': 30}, 'loss_fns': [{'energy': {'fn': 'mae', 'coefficient': 1}}, {'forces': {'fn': 'l2mae', 'coefficient': 30}}], 'eval_metrics': {'metrics': {'misc': ['energy_forces_within_threshold'], 'energy': ['mae'], 'forces': ['forcesx_mae', 'forcesy_mae', 'forcesz_mae', 'mae', 'cosine_similarity', 'magnitude_error']}}, 'logger': 'wandb', 'amp': False, 'gpus': 0, 'cmd': {'identifier': '', 'print_every': 10, 'seed': 0, 'timestamp_id': '2024-05-14-20-31-12', 'commit': None, 'checkpoint_dir': './checkpoints/2024-05-14-20-31-12', 'results_dir': './results/2024-05-14-20-31-12', 'logs_dir': './logs/wandb/2024-05-14-20-31-12'}, 'slurm': {}, 'noddp': False, 'dataset': {'src': 'data/s2ef/mytrain/', 'normalize_labels': True, 'target_mean': -0.7554450631141663, 'target_std': 2.887317180633545, 'grad_target_mean': 0.0, 'grad_target_std': 2.887317180633545, 'format': 'trajectory_lmdb', 'key_mapping': {'y': 'energy', 'force': 'forces'}, 'transforms': {'normalizer': {'energy': {'mean': -0.7554450631141663, 'stdev': 2.887317180633545}, 'forces': {'mean': 0.0, 'stdev': 2.887317180633545}}}}, 'val_dataset': {'src': 'data/s2ef/myval/'}}
+2024-05-14 20:30:36,032 INFO    MainThread:49211 [wandb_init.py:init():611] starting backend
+2024-05-14 20:30:36,032 INFO    MainThread:49211 [wandb_init.py:init():615] setting up manager
+2024-05-14 20:30:36,033 INFO    MainThread:49211 [backend.py:_multiprocessing_setup():105] multiprocessing start_methods=spawn,fork,forkserver, using: spawn
+2024-05-14 20:30:36,035 INFO    MainThread:49211 [wandb_init.py:init():623] backend started and connected
+2024-05-14 20:30:36,040 INFO    MainThread:49211 [wandb_init.py:init():715] updated telemetry
+2024-05-14 20:30:36,070 INFO    MainThread:49211 [wandb_init.py:init():748] communicating run to backend with 90.0 second timeout
+2024-05-14 20:30:36,074 INFO    MainThread:49211 [wandb_init.py:init():799] starting run threads in backend
+2024-05-14 20:30:36,190 INFO    MainThread:49211 [wandb_run.py:_console_start():2335] atexit reg
+2024-05-14 20:30:36,190 INFO    MainThread:49211 [wandb_run.py:_redirect():2190] redirect: wrap_raw
+2024-05-14 20:30:36,190 INFO    MainThread:49211 [wandb_run.py:_redirect():2255] Wrapping output streams.
+2024-05-14 20:30:36,190 INFO    MainThread:49211 [wandb_run.py:_redirect():2280] Redirects installed.
+2024-05-14 20:30:36,190 INFO    MainThread:49211 [wandb_init.py:init():842] run started, returning control to user process
+2024-05-14 20:30:36,303 INFO    MainThread:49211 [wandb_watch.py:watch():51] Watching
+2024-05-14 20:35:02,698 WARNING MsgRouterThr:49211 [router.py:message_loop():77] message_loop has been closed

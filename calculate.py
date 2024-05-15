@@ -1,51 +1,26 @@
-from ocpmodels.common.relaxation.ase_utils import OCPCalculator
-import os
-import numpy as np
+from fairchem.core.models.model_registry import model_name_to_local_file
+from fairchem.core.common.relaxation.ase_utils import OCPCalculator
+from ase.build import fcc111, add_adsorbate
 from ase.optimize import BFGS
-from ase.build import fcc100, add_adsorbate, molecule
-from ase.constraints import FixAtoms
-from ase.calculators.emt import EMT
-from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
-from ase.md.langevin import Langevin
-from ase import units
-from ase.io import Trajectory
+import matplotlib.pyplot as plt
+from ase.visualize import view
 
-# odac23 does not work well?
-checkpoint = "gndt_oc22_all_s2ef.pt"
-checkpoint_dir = "./downloaded_checkpoints/oc22/"
-checkpoint_path = checkpoint_dir + checkpoint
 
-trainer = "forces"  # for S2EF
+# checkpoint is downloaded by the following command
+checkpoint_path = model_name_to_local_file("GemNet-OC-S2EFS-OC20+OC22",
+                                            local_cache="./tmp/ocp_checkpoints/")
 
-# Construct a sample structure
-adslab = fcc100("Cu", size=(4, 4, 4))
-adsorbate = molecule("C3H8")
-add_adsorbate(adslab, adsorbate, 3, offset=(1, 1))
-tags = np.zeros(len(adslab))
-tags[18:27] = 1
-tags[27:] = 2
+# Define the model atomic system, a Pt(111) slab with an *O adsorbate!
+slab = fcc111('Pt', size=(2, 2, 5), vacuum=10.0)
+add_adsorbate(slab, 'O', height=1.2, position='fcc')
 
-adslab.set_tags(tags)
-cons= FixAtoms(indices=[atom.index for atom in adslab if (atom.tag == 0)])
-adslab.set_constraint(cons)
-adslab.center(vacuum=13.0, axis=2)
-adslab.set_pbc(True)
+# Load the pre-trained checkpoint!
+calc = OCPCalculator(checkpoint_path=checkpoint_path, cpu=False)
+slab.set_calculator(calc)
 
-# Define the calculator
-calc = OCPCalculator(checkpoint_path=checkpoint_path, trainer=trainer)
-#calc = EMT()
+# Run the optimization
+opt = BFGS(slab, trajectory="test.traj")
+opt.run(fmax=0.05, steps=100)
 
-# Set up the calculator
-adslab.calc = calc
-
-# Geometry optimization
-#opt = BFGS(adslab, trajectory="test.traj")
-#opt.run(fmax=0.05, steps=100)
-
-# Molecular dynamics
-temperature_K = 300
-MaxwellBoltzmannDistribution(adslab, temperature_K=temperature_K)
-dyn = Langevin(adslab, timestep=1.0*units.fs, temperature_K=temperature_K, friction=0.01/units.fs)
-traj = Trajectory("test.traj", "w", adslab)
-dyn.attach(traj.write, interval=1)
-dyn.run(100)
+# Visualize the result
+view("test.traj")
