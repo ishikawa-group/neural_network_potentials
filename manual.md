@@ -96,8 +96,7 @@ dataset:
     a2g_args:
       r_energy: False
       r_forces: False
-	  # It is not necessary to have energy or forces 
-	  # if you are just making predictions.
+      # It is not necessary to have energy or forces when making predictions
 ```
 
 ## Using ASE-Readable Files --> can be skipped first
