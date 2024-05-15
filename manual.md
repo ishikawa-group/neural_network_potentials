@@ -35,8 +35,7 @@ import matplotlib.pyplot as plt
 from ase.visualize import view
 
 # checkpoint is downloaded by the following command
-checkpoint_path = model_name_to_local_file("GemNet-OC-S2EFS-OC20+OC22",
-                                            local_cache="./tmp/ocp_checkpoints/")
+checkpoint_path = model_name_to_local_file("GemNet-OC-S2EFS-OC20+OC22", local_cache="./downloaded_checkpoints/")
 
 # Define the model atomic system, a Pt(111) slab with an *O adsorbate!
 slab = fcc111('Pt', size=(2, 2, 5), vacuum=10.0)
@@ -218,10 +217,10 @@ a2g = AtomsToGraphs(
 * Let's initialize the LMDB file, under some directory.
  
 ```python
-os.makedirs("s2ef", exist_ok=True)
+os.makedirs("data/s2ef", exist_ok=True)
 
 db = lmdb.open(
-    "s2ef/sample_CuCO.lmdb",
+    "data/s2ef/sample_CuCO.lmdb",
     map_size=1099511627776*2,
     subdir=False,
     meminit=False,
