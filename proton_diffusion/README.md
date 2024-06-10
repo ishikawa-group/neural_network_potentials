@@ -34,6 +34,7 @@
 * To calculate the diffusion coefficient of proton (or hydrogen), we calculate the mean-square displacnement.
   We use the fact that the MSD should be fitted to the line, and the slope of the line is the diffusion coefficient (D).
 * We can compare D with experiment, as this can be measured with experiment.
+* The reference for the script: https://github.com/matlantis-pfcc/matlantis-contrib/blob/main/matlantis_contrib_examples/MD_Li_diffusion_in_LGPS/viewer.en.ipynb
 * The python file does the following:
   1. Load the fine-tuned checkpoint file.
   2. Load the cif file and make the solid structure.
