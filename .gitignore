@@ -1,0 +1,9 @@
+checkpoints/
+downloaded_checkpoints/
+results/
+logs/
+
+tmp.*
+*.traj
+*.pt
+*.lmdb
