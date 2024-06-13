@@ -77,5 +77,9 @@ dataset = LmdbDataset({"src": dataset_name})
 
 subprocess.run("rm *.lmdb-lock", shell=True)  # delete lock file, which is unnecessary
 
+# make directory
+subprocess.run(f"mkdir -p ../data/s2ef/mytrain/", shell=True)
+subprocess.run(f"mkdir -p ../data/s2ef/mytrain/", shell=True)
+
 subprocess.run(f"cp {dataset_name} ../data/s2ef/mytrain/", shell=True)
 subprocess.run(f"cp {dataset_name} ../data/s2ef/myval/", shell=True)

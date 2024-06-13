@@ -26,7 +26,7 @@ checkpoint_path = "./checkpoints/2024-06-10-11-16-32/checkpoint.pt"
 calc = OCPCalculator(checkpoint_path=checkpoint_path, cpu=False)
 
 bulk = read("BaZrO3.cif")
-replicate_size = 2
+replicate_size = 4
 replicate = [replicate_size]*3
 bulk = bulk*replicate
 cell_length = bulk.cell.cellpar()
@@ -39,7 +39,7 @@ bulk.set_calculator(calc)
 
 traj_name = "test.traj"
 temperature_K = 523
-steps = 1000
+steps = 100
 timestep = 1.0*units.fs
 
 MaxwellBoltzmannDistribution(bulk, temperature_K=temperature_K)
