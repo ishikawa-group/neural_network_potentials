@@ -1,0 +1,5 @@
+fairchem-core
+numpy
+torch
+torch-scatter
+torch_geometric
