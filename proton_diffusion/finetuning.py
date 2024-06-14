@@ -1,3 +1,5 @@
+import os
+# os.environ['OPENBLAS_NUM_THREADS'] = '1'  # if openblas error happens, uncomment this
 from fairchem.core.models import model_name_to_local_file
 from fairchem.core.common.relaxation.ase_utils import OCPCalculator
 from ase import Atoms
@@ -10,10 +12,9 @@ import os
 import subprocess
 import time
 import json
-import numpy as np
 import matplotlib.pyplot as plt
 
-# when clean
+# when clean checkpoint file
 subprocess.run("rm -rf ./checkpoints/*", shell=True)
 
 # pretrained_model = "DimeNet++-S2EF-ODAC"  # bad
@@ -23,6 +24,7 @@ pretrained_model = "PaiNN-S2EF-OC20-All"
 checkpoint_path = model_name_to_local_file(model_name=pretrained_model, local_cache="../pretrained_checkpoints")
 
 # --- when using ASE database
+
 # subprocess.run("rm -rf train.db test.db val.db *.db.lock", shell=True)
 # train, test, val = train_test_val_split("bulk.db")  # when using ASE database
 
@@ -69,7 +71,7 @@ generate_yml_config(checkpoint_path=checkpoint_path, yml=yml,
 print(f"config yaml file seved to {yml}.")
 
 t0 = time.time()
-subprocess.run(f"python ../main.py --mode train --config-yml {yml} --checkpoint {checkpoint_path} > train.txt 2>&1", shell=True)
+subprocess.run(f"python ../main.py --mode train --config-yml {yml} --checkpoint {checkpoint_path} &> train.txt", shell=True)
 print(f"Elapsed time = {time.time() - t0:1.1f} seconds")
 
 cpline  = subprocess.check_output(["grep", "checkpoint_dir", "train.txt"])

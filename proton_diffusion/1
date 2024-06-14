@@ -1,0 +1,12 @@
+/home/1/uk02411/.local/lib/python3.9/site-packages/torch/cuda/__init__.py:619: UserWarning: Can't initialize NVML
+  warnings.warn("Can't initialize NVML")
+Traceback (most recent call last):
+  File "/home/1/uk02411/opencatalystproject/proton_diffusion/../main.py", line 8, in <module>
+    main()
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/_cli.py", line 61, in main
+    config = build_config(args, override_args)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/common/utils.py", line 443, in build_config
+    overrides = create_dict_from_args(args_override)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/common/utils.py", line 381, in create_dict_from_args
+    keys_concat, val = arg.removeprefix("--").split("=")
+ValueError: not enough values to unpack (expected 2, got 1)

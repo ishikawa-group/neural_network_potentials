@@ -78,8 +78,13 @@ dataset = LmdbDataset({"src": dataset_name})
 subprocess.run("rm *.lmdb-lock", shell=True)  # delete lock file, which is unnecessary
 
 # make directory
-subprocess.run(f"mkdir -p ../data/s2ef/mytrain/", shell=True)
-subprocess.run(f"mkdir -p ../data/s2ef/mytrain/", shell=True)
+train_dir = "../data/s2ef/mytrain"
+val_dir   = "../data/s2ef/myval"
 
-subprocess.run(f"cp {dataset_name} ../data/s2ef/mytrain/", shell=True)
-subprocess.run(f"cp {dataset_name} ../data/s2ef/myval/", shell=True)
+for idir in [train_dir, val_dir]:
+    if not os.path.exists(idir):
+        os.makedirs(idir)
+
+subprocess.run(f"cp {dataset_name} {train_dir}", shell=True)
+subprocess.run(f"cp {dataset_name} {val_dir}", shell=True)
+

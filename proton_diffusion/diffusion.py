@@ -1,3 +1,5 @@
+import os 
+# os.environ['OPENBLAS_NUM_THREADS'] = '1'  # if openblas error happens, uncomment this
 from ase import Atom, Atoms
 from ase.io import read, Trajectory
 from ase.visualize import view
@@ -9,19 +11,25 @@ from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase import units
 from ase.constraints import FixAtoms
 from ase.visualize.plot import plot_atoms
-import numpy as np
 import matplotlib.pyplot as plt
 import subprocess
 import statsmodels.api as sm
 from fairchem.core.models.model_registry import model_name_to_local_file
 from fairchem.core.common.relaxation.ase_utils import OCPCalculator
+import argparse
+import numpy as np
 
 # --- when using non-fine-tuned NNP
 # model_name = "PaiNN-S2EF-OC20-All"
 # checkpoint_path = model_name_to_local_file(model_name=model_name, local_cache="../checkpoints")
 
-# --- load the fine-tuned NNP
-checkpoint_path = "./checkpoints/2024-06-10-11-16-32/checkpoint.pt"
+parser = argparse.ArgumentParser()
+parser.add_argument("--checkpoint")
+parser.add_argument("--show_plot", action="store_true")
+args = parser.parse_args()
+
+checkpoint_path = args.checkpoint
+show_plot = args.show_plot
 
 calc = OCPCalculator(checkpoint_path=checkpoint_path, cpu=False)
 
@@ -65,30 +73,31 @@ positions_z = positions[:, :, 2]
 # total msd. sum along xyz axis & mean along Li atoms axis.
 msd = np.mean(np.sum((positions-positions[0])**2, axis=2), axis=1)
 real_timestep = timestep/units.fs/units.fs  # real (not ASE) femtosecond [10^-15 s]
-print(real_timestep)
 time = np.linspace(t0, len(msd), len(msd))/real_timestep
 
-fontsize = 24
-plt.plot(time, msd)
-plt.xlabel("Time (ps)", fontsize=fontsize)
-plt.ylabel("MSD (A^2)", fontsize=fontsize)
-plt.tick_params(labelsize=fontsize)
-plt.tight_layout()
-plt.show()
+if show_plot:
+    fontsize = 24
+    plt.plot(time, msd)
+    plt.xlabel("Time (ps)", fontsize=fontsize)
+    plt.ylabel("MSD (A^2)", fontsize=fontsize)
+    plt.tick_params(labelsize=fontsize)
+    plt.tight_layout()
+    plt.show()
 
-subprocess.run(f"ase gui {traj_name}", shell=True)
+    subprocess.run(f"ase gui {traj_name}", shell=True)
 
 model = sm.OLS(msd, time)
 result = model.fit()
 slope = result.params[0]
-# slope, intercept, r_value, _, _ = stats.linregress(range(len(msd)), msd)
 D = slope / 6   # divide by degree of freedom (x, y, z, -x, -y, -z)
-
-plt.plot(time, msd, label="MSD")
-plt.plot(time, time * slope, label="fitted line")
-plt.xlabel("Time (ps)", fontsize=fontsize)
-plt.ylabel("MSD (A^2)", fontsize=fontsize)
-plt.tick_params(labelsize=fontsize)
-plt.tight_layout()
-plt.show()
 print(f"Diffusion coefficient: {D*1e-16*1e12:6.4e} [cm^2/s]")
+
+if show_plot:
+    plt.plot(time, msd, label="MSD")
+    plt.plot(time, time * slope, label="fitted line")
+    plt.xlabel("Time (ps)", fontsize=fontsize)
+    plt.ylabel("MSD (A^2)", fontsize=fontsize)
+    plt.tick_params(labelsize=fontsize)
+    plt.tight_layout()
+    plt.show()
+
