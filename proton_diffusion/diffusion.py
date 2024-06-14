@@ -43,7 +43,7 @@ pos = 0.5 * cell_length[0] / replicate_size
 # put hydrogen
 bulk.append(Atom("H", position=[pos, 0, 0]))
 
-bulk.set_calculator(calc)
+bulk.calc = calc
 
 traj_name = "test.traj"
 temperature_K = 523
