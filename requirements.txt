@@ -1,5 +1,8 @@
-fairchem-core
 numpy
-torch
+torch==2.2.2
+-f https://data.pyg.org/whl/torch-2.2.2+cpu.html
 torch-scatter
 torch_geometric
+torch_sparse
+fairchem-core
+# urllib3==1.26.11
