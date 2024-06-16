@@ -1,7 +1,7 @@
 #!/bin/sh
 #$ -cwd
-#$ -l cpu_4=1
-#$ -l h_rt=0:10:00
+#$ -l node_o=1
+#$ -l h_rt=1:00:00
 #$ -N serial
 
 # loading CUDA
@@ -9,5 +9,12 @@ module load cuda
 # loading Intel compiler
 module load intel
 
-python diffusion.py --checkpoint "./checkpoints/2024-06-14-10-33-52/checkpoint.pt"
+pip uninstall -y torch torch_geometric torch_scatter torch_sparse
+pip install -r ../requirements.txt
+
+maxtime_ps=1.0
+
+python make_lmdb_from_outcar.py >& out1.txt
+python finetuning.py >& out2.txt
+python diffusion.py --maxtime_ps ${maxtime_ps} >& out3.txt
 
