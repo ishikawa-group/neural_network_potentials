@@ -1,2 +1,0 @@
-rm: cannot remove 'config.yml': No such file or directory
-WARNING:root:Detected old config, converting to new format. Consider updating to avoid potential incompatibilities.
