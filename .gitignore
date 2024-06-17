@@ -4,6 +4,10 @@ results/
 logs/
 
 tmp.*
+out*.txt
 *.traj
 *.pt
+*.log
 *.lmdb
+*.e[0-9]*
+*.o[0-9]*

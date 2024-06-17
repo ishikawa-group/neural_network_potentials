@@ -1,15 +1,15 @@
-2024-06-16 17:17:13 (INFO): Project root: /home/1/uk02411/.local/lib/python3.9/site-packages/fairchem
-2024-06-16 17:17:14 (WARNING): Detected old config, converting to new format. Consider updating to avoid potential incompatibilities.
-2024-06-16 17:17:14 (INFO): amp: false
+2024-06-17 15:51:00 (INFO): Project root: /home/1/uk02411/.local/lib/python3.9/site-packages/fairchem
+2024-06-17 15:51:01 (WARNING): Detected old config, converting to new format. Consider updating to avoid potential incompatibilities.
+2024-06-17 15:51:01 (INFO): amp: false
 cmd:
-  checkpoint_dir: ./checkpoints/2024-06-16-17-17-04
+  checkpoint_dir: ./checkpoints/2024-06-17-15-51-44
   commit: null
   identifier: ''
-  logs_dir: ./logs/tensorboard/2024-06-16-17-17-04
+  logs_dir: ./logs/tensorboard/2024-06-17-15-51-44
   print_every: 10
-  results_dir: ./results/2024-06-16-17-17-04
+  results_dir: ./results/2024-06-17-15-51-44
   seed: 0
-  timestamp_id: 2024-06-16-17-17-04
+  timestamp_id: 2024-06-17-15-51-44
   version: ''
 dataset:
   a2g_args:
@@ -96,25 +96,25 @@ val_dataset:
     r_forces: true
   src: ../data/s2ef/myval
 
-2024-06-16 17:17:14 (INFO): Loading dataset: lmdb
-2024-06-16 17:17:14 (INFO): rank: 0: Sampler created...
-2024-06-16 17:17:14 (INFO): Batch balancing is disabled for single GPU training.
-2024-06-16 17:17:14 (INFO): rank: 0: Sampler created...
-2024-06-16 17:17:14 (INFO): Batch balancing is disabled for single GPU training.
-2024-06-16 17:17:14 (INFO): Loading model: painn
+2024-06-17 15:51:01 (INFO): Loading dataset: lmdb
+2024-06-17 15:51:01 (INFO): rank: 0: Sampler created...
+2024-06-17 15:51:01 (INFO): Batch balancing is disabled for single GPU training.
+2024-06-17 15:51:01 (INFO): rank: 0: Sampler created...
+2024-06-17 15:51:01 (INFO): Batch balancing is disabled for single GPU training.
+2024-06-17 15:51:01 (INFO): Loading model: painn
 /home/1/uk02411/.local/lib/python3.9/site-packages/torch_geometric/nn/conv/message_passing.py:988: UserWarning: 'PaiNNMessage.jittable' is deprecated and a no-op. Please remove its usage.
   warnings.warn(f"'{self.__class__.__name__}.jittable' is deprecated "
-2024-06-16 17:17:14 (INFO): Loaded PaiNN with 20073481 parameters.
-2024-06-16 17:17:14 (WARNING): Model gradient logging to tensorboard not yet supported.
-2024-06-16 17:17:14 (WARNING): Using `weight_decay` from `optim` instead of `optim.optimizer_params`.Please update your config to use `optim.optimizer_params.weight_decay`.`optim.weight_decay` will soon be deprecated.
-2024-06-16 17:17:14 (INFO): Loading checkpoint from: ../pretrained_checkpoints/painn_h512_s2ef_all.pt
-2024-06-16 17:17:15 (INFO): Overwriting scaling factors with those loaded from checkpoint. If you're generating predictions with a pretrained checkpoint, this is the correct behavior. To disable this, delete `scale_dict` from the checkpoint. 
-2024-06-16 17:17:16 (INFO): energy_forces_within_threshold: 0.00e+00, energy_mae: 3.05e+02, forcesx_mae: 2.59e-01, forcesy_mae: 2.84e-01, forcesz_mae: 2.49e-01, forces_mae: 2.64e-01, forces_cosine_similarity: 8.84e-01, forces_magnitude_error: 4.23e-01, loss: 3.59e+02, lr: 1.00e-04, epoch: 4.00e-01, step: 1.00e+01
-2024-06-16 17:17:17 (INFO): Evaluating on val.
-device 0:   0%|          | 0/16 [00:00<?, ?it/s]device 0:   6%|▋         | 1/16 [00:00<00:01,  9.81it/s]device 0:  19%|█▉        | 3/16 [00:00<00:01, 10.13it/s]device 0:  31%|███▏      | 5/16 [00:00<00:01, 10.28it/s]device 0:  44%|████▍     | 7/16 [00:00<00:00, 10.31it/s]device 0:  56%|█████▋    | 9/16 [00:00<00:00, 10.33it/s]device 0:  69%|██████▉   | 11/16 [00:01<00:00, 10.35it/s]device 0:  81%|████████▏ | 13/16 [00:01<00:00, 10.36it/s]device 0:  94%|█████████▍| 15/16 [00:01<00:00, 10.36it/s]device 0: 100%|██████████| 16/16 [00:01<00:00, 10.54it/s]
-2024-06-16 17:17:18 (INFO): energy_forces_within_threshold: 0.0000, energy_mae: 228.8776, forcesx_mae: 0.1548, forcesy_mae: 0.1669, forcesz_mae: 0.1443, forces_mae: 0.1553, forces_cosine_similarity: 0.9545, forces_magnitude_error: 0.2140, loss: 260.3381, epoch: 0.4000
-2024-06-16 17:17:19 (INFO): energy_forces_within_threshold: 0.00e+00, energy_mae: 1.04e+02, forcesx_mae: 1.95e-01, forcesy_mae: 2.28e-01, forcesz_mae: 1.88e-01, forces_mae: 2.04e-01, forces_cosine_similarity: 9.24e-01, forces_magnitude_error: 3.08e-01, loss: 1.45e+02, lr: 1.00e-04, epoch: 8.00e-01, step: 2.00e+01
-2024-06-16 17:17:20 (INFO): Evaluating on val.
-device 0:   0%|          | 0/16 [00:00<?, ?it/s]device 0:  12%|█▎        | 2/16 [00:00<00:01, 10.54it/s]device 0:  25%|██▌       | 4/16 [00:00<00:01, 10.57it/s]device 0:  38%|███▊      | 6/16 [00:00<00:00, 10.55it/s]device 0:  50%|█████     | 8/16 [00:00<00:00, 10.52it/s]device 0:  62%|██████▎   | 10/16 [00:00<00:00, 10.52it/s]device 0:  75%|███████▌  | 12/16 [00:01<00:00, 10.51it/s]device 0:  88%|████████▊ | 14/16 [00:01<00:00, 10.51it/s]device 0: 100%|██████████| 16/16 [00:01<00:00, 11.10it/s]device 0: 100%|██████████| 16/16 [00:01<00:00, 10.74it/s]
-2024-06-16 17:17:21 (INFO): energy_forces_within_threshold: 0.0000, energy_mae: 17.2255, forcesx_mae: 0.1177, forcesy_mae: 0.1384, forcesz_mae: 0.1223, forces_mae: 0.1261, forces_cosine_similarity: 0.9652, forces_magnitude_error: 0.1642, loss: 42.6605, epoch: 0.8000
-2024-06-16 17:17:22 (INFO): Total time taken: 7.7482521533966064
+2024-06-17 15:51:01 (INFO): Loaded PaiNN with 20073481 parameters.
+2024-06-17 15:51:01 (WARNING): Model gradient logging to tensorboard not yet supported.
+2024-06-17 15:51:01 (WARNING): Using `weight_decay` from `optim` instead of `optim.optimizer_params`.Please update your config to use `optim.optimizer_params.weight_decay`.`optim.weight_decay` will soon be deprecated.
+2024-06-17 15:51:01 (INFO): Loading checkpoint from: ../pretrained_checkpoints/painn_h512_s2ef_all.pt
+2024-06-17 15:51:01 (INFO): Overwriting scaling factors with those loaded from checkpoint. If you're generating predictions with a pretrained checkpoint, this is the correct behavior. To disable this, delete `scale_dict` from the checkpoint. 
+2024-06-17 15:51:03 (INFO): energy_forces_within_threshold: 0.00e+00, energy_mae: 3.05e+02, forcesx_mae: 2.59e-01, forcesy_mae: 2.84e-01, forcesz_mae: 2.49e-01, forces_mae: 2.64e-01, forces_cosine_similarity: 8.84e-01, forces_magnitude_error: 4.23e-01, loss: 3.59e+02, lr: 1.00e-04, epoch: 4.00e-01, step: 1.00e+01
+2024-06-17 15:51:03 (INFO): Evaluating on val.
+device 0:   0%|          | 0/16 [00:00<?, ?it/s]device 0:   6%|▋         | 1/16 [00:00<00:01,  9.76it/s]device 0:  19%|█▉        | 3/16 [00:00<00:01, 10.07it/s]device 0:  31%|███▏      | 5/16 [00:00<00:01, 10.24it/s]device 0:  44%|████▍     | 7/16 [00:00<00:00, 10.28it/s]device 0:  56%|█████▋    | 9/16 [00:00<00:00, 10.30it/s]device 0:  69%|██████▉   | 11/16 [00:01<00:00, 10.31it/s]device 0:  81%|████████▏ | 13/16 [00:01<00:00, 10.32it/s]device 0:  94%|█████████▍| 15/16 [00:01<00:00, 10.32it/s]device 0: 100%|██████████| 16/16 [00:01<00:00, 10.50it/s]
+2024-06-17 15:51:05 (INFO): energy_forces_within_threshold: 0.0000, energy_mae: 228.8776, forcesx_mae: 0.1548, forcesy_mae: 0.1669, forcesz_mae: 0.1443, forces_mae: 0.1553, forces_cosine_similarity: 0.9545, forces_magnitude_error: 0.2140, loss: 260.3381, epoch: 0.4000
+2024-06-17 15:51:06 (INFO): energy_forces_within_threshold: 0.00e+00, energy_mae: 1.04e+02, forcesx_mae: 1.95e-01, forcesy_mae: 2.28e-01, forcesz_mae: 1.88e-01, forces_mae: 2.04e-01, forces_cosine_similarity: 9.24e-01, forces_magnitude_error: 3.08e-01, loss: 1.45e+02, lr: 1.00e-04, epoch: 8.00e-01, step: 2.00e+01
+2024-06-17 15:51:07 (INFO): Evaluating on val.
+device 0:   0%|          | 0/16 [00:00<?, ?it/s]device 0:  12%|█▎        | 2/16 [00:00<00:01, 10.50it/s]device 0:  25%|██▌       | 4/16 [00:00<00:01, 10.52it/s]device 0:  38%|███▊      | 6/16 [00:00<00:00, 10.50it/s]device 0:  50%|█████     | 8/16 [00:00<00:00, 10.48it/s]device 0:  62%|██████▎   | 10/16 [00:00<00:00, 10.48it/s]device 0:  75%|███████▌  | 12/16 [00:01<00:00, 10.48it/s]device 0:  88%|████████▊ | 14/16 [00:01<00:00, 10.48it/s]device 0: 100%|██████████| 16/16 [00:01<00:00, 11.07it/s]device 0: 100%|██████████| 16/16 [00:01<00:00, 10.71it/s]
+2024-06-17 15:51:08 (INFO): energy_forces_within_threshold: 0.0000, energy_mae: 17.2252, forcesx_mae: 0.1177, forcesy_mae: 0.1384, forcesz_mae: 0.1223, forces_mae: 0.1261, forces_cosine_similarity: 0.9652, forces_magnitude_error: 0.1642, loss: 42.6603, epoch: 0.8000
+2024-06-17 15:51:09 (INFO): Total time taken: 7.791010618209839

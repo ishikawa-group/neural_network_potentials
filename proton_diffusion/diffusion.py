@@ -40,7 +40,7 @@ calc = OCPCalculator(checkpoint_path=checkpoint_path, cpu=False)
 
 bulk = read("BaZrO3.cif")
 ###
-replicate_size = 6
+replicate_size = 5
 each = 10  # step to save trajectory
 ###
 replicate = [replicate_size]*3
@@ -49,25 +49,29 @@ cell_length = bulk.cell.cellpar()
 pos = 0.5 * cell_length[0] / replicate_size
 
 # put hydrogen
-bulk.append(Atom("H", position=[pos, 0, 0]))
-bulk.append(Atom("H", position=[3*pos, 3*pos, 0]))
+bulk.append(Atom("H", position=[  pos,     0, 0]))
+bulk.append(Atom("H", position=[3*pos, 2*pos, 0]))
 
 bulk.calc = calc
 
 traj_name = "test.traj"
-temperature_K = 523
+temperature_K = 1000
 timestep = 1.0*units.fs  # in fs. Use 1 or 0.5 fs.
-steps = math.ceil(maxtime_ps/(timestep*1e-3))
+t0 = 0.1  # starting time for taking MSD [ps].
 
+steps    = math.ceil((maxtime_ps+t0)/(timestep*1e-3))
+t0_steps = math.ceil(t0/(timestep*1e-3))
+
+print(f"temperature [K]: {temperature_K}", flush=True)
 print(f"maximum time [ps]: {maxtime_ps}", flush=True)
+print(f"discard initial trajectories for {t0} [ps].", flush=True)
 print(f"steps: {steps}", flush=True)
 
 MaxwellBoltzmannDistribution(bulk, temperature_K=temperature_K)
-dyn = Langevin(bulk, timestep=timestep, temperature_K=temperature_K, friction=0.1/units.fs,
-               trajectory="tmp.traj", logfile="md.log", loginterval=10)
-
-# dyn = NVTBerendsen(bulk, timestep=timestep, temperature_K=temperature_K, taut=0.5*(1000*units.fs),
-#                    trajectory="tmp.traj", logfile="md.log", loginterval=10)
+dyn = Langevin(bulk, timestep=timestep, temperature_K=temperature_K, friction=0.01/units.fs,
+               trajectory="tmp.traj", logfile="md.log", loginterval=10)  # friction: 0.01-0.1
+# dyn = NVTBerendsen(bulk, timestep=timestep, temperature_K=temperature_K, taut=0.01*(1000*units.fs),
+#                   trajectory="tmp.traj", logfile="md.log", loginterval=10)  # tout: 0.01-0.1
 dyn.run(steps=steps)
 
 # saveing trajectory file with some interval, as the file becomes too big
@@ -79,29 +83,16 @@ traj = read("tmp.traj", ":")
 
 H_index = [i for i, x in enumerate(traj[0].get_chemical_symbols()) if x == "H"]
 
-positions_all = np.array([traj[i].get_positions() for i in range(0, len(traj))])
+# position of all atoms
+# positions_all = np.array([traj[i].get_positions() for i in range(0, len(traj))])
+positions_all = np.array([traj[i].get_positions() for i in range(t0_steps, steps)])
 
 # position of H
 positions = positions_all[:, H_index]
-positions_x = positions[:, :, 0]
-positions_y = positions[:, :, 1]
-positions_z = positions[:, :, 2]
 
 # total msd. sum along xyz axis & mean along Li atoms axis.
 msd = np.mean(np.sum((positions-positions[0])**2, axis=2), axis=1)
-# time = np.linspace(0, len(msd)*(timestep/1000), len(msd))  # fs -> ps
-time = np.linspace(0, maxtime_ps, len(msd))  # fs -> ps
-
-fontsize = 24
-plt.plot(time, msd)
-plt.xlabel("Time (ps)", fontsize=fontsize)
-plt.ylabel("MSD (A^2)", fontsize=fontsize)
-plt.tick_params(labelsize=fontsize)
-plt.tight_layout()
-
-if show_plot:
-    plt.show()
-    subprocess.run(f"ase gui {traj_name}", shell=True)
+time = np.linspace(t0, maxtime_ps, len(msd))
 
 model = sm.OLS(msd, time)
 result = model.fit()
@@ -109,6 +100,7 @@ slope = result.params[0]
 D = slope / 6   # divide by degree of freedom (x, y, z, -x, -y, -z)
 print(f"Diffusion coefficient: {D*1e-16*1e12:6.4e} [cm^2/s]")
 
+fontsize = 24
 plt.plot(time, msd, label="MSD")
 plt.plot(time, time * slope, label="fitted line")
 plt.xlabel("Time (ps)", fontsize=fontsize)

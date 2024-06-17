@@ -2,7 +2,6 @@
 #$ -cwd
 #$ -l node_o=1
 #$ -l h_rt=1:00:00
-#$ -N serial
 
 # loading CUDA
 module load cuda
