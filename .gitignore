@@ -4,6 +4,7 @@ results/
 logs/
 
 tmp.*
+train.txt
 out*.txt
 *.traj
 *.pt

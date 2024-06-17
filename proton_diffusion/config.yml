@@ -5,12 +5,12 @@ dataset:
     a2g_args:
       r_energy: true
       r_forces: true
-    src: ../data/s2ef/mytrain
+    src: train.db
   val:
     a2g_args:
       r_energy: true
       r_forces: true
-    src: ../data/s2ef/myval
+    src: val.db
 evaluation_metrics:
   metrics:
     energy:
@@ -121,5 +121,5 @@ outputs:
     level: atom
     train_on_free_atoms: true
 task:
-  dataset: lmdb
+  dataset: ase_db
 trainer: ocp
