@@ -1,15 +1,15 @@
-2024-06-17 15:51:00 (INFO): Project root: /home/1/uk02411/.local/lib/python3.9/site-packages/fairchem
-2024-06-17 15:51:01 (WARNING): Detected old config, converting to new format. Consider updating to avoid potential incompatibilities.
-2024-06-17 15:51:01 (INFO): amp: false
+2024-06-18 07:43:14 (INFO): Project root: /home/1/uk02411/.local/lib/python3.9/site-packages/fairchem
+2024-06-18 07:43:16 (WARNING): Detected old config, converting to new format. Consider updating to avoid potential incompatibilities.
+2024-06-18 07:43:16 (INFO): amp: false
 cmd:
-  checkpoint_dir: ./checkpoints/2024-06-17-15-51-44
+  checkpoint_dir: ./checkpoints/2024-06-18-07-43-12
   commit: null
   identifier: ''
-  logs_dir: ./logs/tensorboard/2024-06-17-15-51-44
+  logs_dir: ./logs/tensorboard/2024-06-18-07-43-12
   print_every: 10
-  results_dir: ./results/2024-06-17-15-51-44
+  results_dir: ./results/2024-06-18-07-43-12
   seed: 0
-  timestamp_id: 2024-06-17-15-51-44
+  timestamp_id: 2024-06-18-07-43-12
   version: ''
 dataset:
   a2g_args:
@@ -41,18 +41,63 @@ loss_fns:
     coefficient: 1
     fn: mae
 - forces:
-    coefficient: 100
+    coefficient: 1
     fn: l2mae
-model: painn
+model: gemnet_oc
 model_attributes:
+  activation: silu
+  atom_edge_interaction: true
+  atom_interaction: true
+  cbf:
+    name: spherical_harmonics
   cutoff: 12.0
+  cutoff_aeaint: 12.0
+  cutoff_aint: 12.0
+  cutoff_qint: 12.0
   direct_forces: true
-  hidden_channels: 512
-  max_neighbors: 50
-  num_layers: 6
-  num_rbf: 128
+  edge_atom_interaction: true
+  emb_size_aint_in: 64
+  emb_size_aint_out: 64
+  emb_size_atom: 256
+  emb_size_cbf: 16
+  emb_size_edge: 512
+  emb_size_quad_in: 32
+  emb_size_quad_out: 32
+  emb_size_rbf: 16
+  emb_size_sbf: 32
+  emb_size_trip_in: 64
+  emb_size_trip_out: 64
+  envelope:
+    exponent: 5
+    name: polynomial
+  extensive: true
+  forces_coupled: false
+  max_neighbors: 30
+  max_neighbors_aeaint: 20
+  max_neighbors_aint: 1000
+  max_neighbors_qint: 8
+  num_after_skip: 2
+  num_atom: 3
+  num_atom_emb_layers: 2
+  num_before_skip: 2
+  num_blocks: 4
+  num_concat: 1
+  num_global_out_layers: 2
+  num_output_afteratom: 3
+  num_radial: 128
+  num_spherical: 7
   otf_graph: true
+  output_init: HeOrthogonal
+  qint_tags:
+  - 1
+  - 2
+  quad_interaction: true
+  rbf:
+    name: gaussian
   regress_forces: true
+  sbf:
+    name: legendre_outer
+  symmetric_edge_symmetrization: false
   use_pbc: true
 noddp: false
 optim:
@@ -60,15 +105,14 @@ optim:
   clip_grad_norm: 10
   ema_decay: 0.999
   energy_coefficient: 1
-  eval_batch_size: 32
+  eval_batch_size: 16
   eval_every: 10
   factor: 0.8
-  force_coefficient: 100
+  force_coefficient: 1
   load_balancing: atoms
   loss_energy: mae
-  loss_force: l2mae
-  lr_gamma: 0.8
-  lr_initial: 0.0001
+  loss_force: atomwisel2
+  lr_initial: 0.0005
   max_epochs: 1
   mode: min
   num_workers: 0
@@ -96,25 +140,49 @@ val_dataset:
     r_forces: true
   src: ../data/s2ef/myval
 
-2024-06-17 15:51:01 (INFO): Loading dataset: lmdb
-2024-06-17 15:51:01 (INFO): rank: 0: Sampler created...
-2024-06-17 15:51:01 (INFO): Batch balancing is disabled for single GPU training.
-2024-06-17 15:51:01 (INFO): rank: 0: Sampler created...
-2024-06-17 15:51:01 (INFO): Batch balancing is disabled for single GPU training.
-2024-06-17 15:51:01 (INFO): Loading model: painn
-/home/1/uk02411/.local/lib/python3.9/site-packages/torch_geometric/nn/conv/message_passing.py:988: UserWarning: 'PaiNNMessage.jittable' is deprecated and a no-op. Please remove its usage.
-  warnings.warn(f"'{self.__class__.__name__}.jittable' is deprecated "
-2024-06-17 15:51:01 (INFO): Loaded PaiNN with 20073481 parameters.
-2024-06-17 15:51:01 (WARNING): Model gradient logging to tensorboard not yet supported.
-2024-06-17 15:51:01 (WARNING): Using `weight_decay` from `optim` instead of `optim.optimizer_params`.Please update your config to use `optim.optimizer_params.weight_decay`.`optim.weight_decay` will soon be deprecated.
-2024-06-17 15:51:01 (INFO): Loading checkpoint from: ../pretrained_checkpoints/painn_h512_s2ef_all.pt
-2024-06-17 15:51:01 (INFO): Overwriting scaling factors with those loaded from checkpoint. If you're generating predictions with a pretrained checkpoint, this is the correct behavior. To disable this, delete `scale_dict` from the checkpoint. 
-2024-06-17 15:51:03 (INFO): energy_forces_within_threshold: 0.00e+00, energy_mae: 3.05e+02, forcesx_mae: 2.59e-01, forcesy_mae: 2.84e-01, forcesz_mae: 2.49e-01, forces_mae: 2.64e-01, forces_cosine_similarity: 8.84e-01, forces_magnitude_error: 4.23e-01, loss: 3.59e+02, lr: 1.00e-04, epoch: 4.00e-01, step: 1.00e+01
-2024-06-17 15:51:03 (INFO): Evaluating on val.
-device 0:   0%|          | 0/16 [00:00<?, ?it/s]device 0:   6%|▋         | 1/16 [00:00<00:01,  9.76it/s]device 0:  19%|█▉        | 3/16 [00:00<00:01, 10.07it/s]device 0:  31%|███▏      | 5/16 [00:00<00:01, 10.24it/s]device 0:  44%|████▍     | 7/16 [00:00<00:00, 10.28it/s]device 0:  56%|█████▋    | 9/16 [00:00<00:00, 10.30it/s]device 0:  69%|██████▉   | 11/16 [00:01<00:00, 10.31it/s]device 0:  81%|████████▏ | 13/16 [00:01<00:00, 10.32it/s]device 0:  94%|█████████▍| 15/16 [00:01<00:00, 10.32it/s]device 0: 100%|██████████| 16/16 [00:01<00:00, 10.50it/s]
-2024-06-17 15:51:05 (INFO): energy_forces_within_threshold: 0.0000, energy_mae: 228.8776, forcesx_mae: 0.1548, forcesy_mae: 0.1669, forcesz_mae: 0.1443, forces_mae: 0.1553, forces_cosine_similarity: 0.9545, forces_magnitude_error: 0.2140, loss: 260.3381, epoch: 0.4000
-2024-06-17 15:51:06 (INFO): energy_forces_within_threshold: 0.00e+00, energy_mae: 1.04e+02, forcesx_mae: 1.95e-01, forcesy_mae: 2.28e-01, forcesz_mae: 1.88e-01, forces_mae: 2.04e-01, forces_cosine_similarity: 9.24e-01, forces_magnitude_error: 3.08e-01, loss: 1.45e+02, lr: 1.00e-04, epoch: 8.00e-01, step: 2.00e+01
-2024-06-17 15:51:07 (INFO): Evaluating on val.
-device 0:   0%|          | 0/16 [00:00<?, ?it/s]device 0:  12%|█▎        | 2/16 [00:00<00:01, 10.50it/s]device 0:  25%|██▌       | 4/16 [00:00<00:01, 10.52it/s]device 0:  38%|███▊      | 6/16 [00:00<00:00, 10.50it/s]device 0:  50%|█████     | 8/16 [00:00<00:00, 10.48it/s]device 0:  62%|██████▎   | 10/16 [00:00<00:00, 10.48it/s]device 0:  75%|███████▌  | 12/16 [00:01<00:00, 10.48it/s]device 0:  88%|████████▊ | 14/16 [00:01<00:00, 10.48it/s]device 0: 100%|██████████| 16/16 [00:01<00:00, 11.07it/s]device 0: 100%|██████████| 16/16 [00:01<00:00, 10.71it/s]
-2024-06-17 15:51:08 (INFO): energy_forces_within_threshold: 0.0000, energy_mae: 17.2252, forcesx_mae: 0.1177, forcesy_mae: 0.1384, forcesz_mae: 0.1223, forces_mae: 0.1261, forces_cosine_similarity: 0.9652, forces_magnitude_error: 0.1642, loss: 42.6603, epoch: 0.8000
-2024-06-17 15:51:09 (INFO): Total time taken: 7.791010618209839
+2024-06-18 07:43:16 (INFO): Loading dataset: lmdb
+2024-06-18 07:43:16 (INFO): rank: 0: Sampler created...
+2024-06-18 07:43:16 (INFO): Batch balancing is disabled for single GPU training.
+2024-06-18 07:43:16 (INFO): rank: 0: Sampler created...
+2024-06-18 07:43:16 (INFO): Batch balancing is disabled for single GPU training.
+2024-06-18 07:43:16 (INFO): Loading model: gemnet_oc
+2024-06-18 07:43:16 (WARNING): Unrecognized arguments: ['symmetric_edge_symmetrization']
+2024-06-18 07:43:18 (INFO): Loaded GemNetOC with 38864438 parameters.
+2024-06-18 07:43:18 (WARNING): Model gradient logging to tensorboard not yet supported.
+2024-06-18 07:43:18 (WARNING): Using `weight_decay` from `optim` instead of `optim.optimizer_params`.Please update your config to use `optim.optimizer_params.weight_decay`.`optim.weight_decay` will soon be deprecated.
+2024-06-18 07:43:18 (INFO): Loading checkpoint from: ../pretrained_checkpoints/gnoc_oc22_oc20_all_s2ef.pt
+2024-06-18 07:43:18 (INFO): Overwriting scaling factors with those loaded from checkpoint. If you're generating predictions with a pretrained checkpoint, this is the correct behavior. To disable this, delete `scale_dict` from the checkpoint. 
+Traceback (most recent call last):
+  File "/home/1/uk02411/opencatalystproject/proton_diffusion/../main.py", line 8, in <module>
+    main()
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/_cli.py", line 89, in main
+    Runner()(config)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/_cli.py", line 41, in __call__
+    self.task.run()
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/tasks/task.py", line 56, in run
+    raise e
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/tasks/task.py", line 51, in run
+    self.trainer.train(
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/trainers/ocp_trainer.py", line 152, in train
+    out = self._forward(batch)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/trainers/ocp_trainer.py", line 235, in _forward
+    out = self.model(batch.to(self.device))
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/common/utils.py", line 156, in cls_method
+    return f(self, *args, **kwargs)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/models/gemnet_oc/gemnet_oc.py", line 1229, in forward
+    ) = self.get_bases(
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/models/gemnet_oc/gemnet_oc.py", line 1102, in get_bases
+    basis_rad_sph_qint_raw, basis_sph_qint_raw = self.sbf_basis_qint(
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/models/gemnet_oc/layers/spherical_basis.py", line 132, in forward
+    sph_basis = self.spherical_basis(cosφ_cab, θ_cabd)
+  File "/home/1/uk02411/.local/lib/python3.9/site-packages/fairchem/core/models/gemnet_oc/layers/spherical_basis.py", line 113, in <lambda>
+    self.spherical_basis = lambda cosφ, ϑ: (
+RuntimeError: cannot reshape tensor of 0 elements into shape [0, -1] because the unspecified dimension size -1 can be any value and is ambiguous

@@ -18,8 +18,8 @@ import matplotlib.pyplot as plt
 subprocess.run("rm -rf ./checkpoints/*", shell=True)
 
 # pretrained_model = "DimeNet++-S2EF-ODAC"  # bad
-pretrained_model = "PaiNN-S2EF-OC20-All"
-# pretrained_model = "GemNet-OC-S2EFS-OC20+OC22"  # takes time
+# pretrained_model = "PaiNN-S2EF-OC20-All"
+pretrained_model = "GemNet-OC-S2EFS-OC20+OC22"  # takes time
 
 checkpoint_path = model_name_to_local_file(model_name=pretrained_model, local_cache="../pretrained_checkpoints")
 

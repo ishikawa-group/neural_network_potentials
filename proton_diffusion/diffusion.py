@@ -40,7 +40,7 @@ calc = OCPCalculator(checkpoint_path=checkpoint_path, cpu=False)
 
 bulk = read("BaZrO3.cif")
 ###
-replicate_size = 5
+replicate_size = 4
 each = 10  # step to save trajectory
 ###
 replicate = [replicate_size]*3
@@ -49,8 +49,12 @@ cell_length = bulk.cell.cellpar()
 pos = 0.5 * cell_length[0] / replicate_size
 
 # put hydrogen
-bulk.append(Atom("H", position=[  pos,     0, 0]))
-bulk.append(Atom("H", position=[3*pos, 2*pos, 0]))
+bulk.append(Atom("H", position=[  pos,     0,     0]))
+bulk.append(Atom("H", position=[3*pos, 2*pos,     0]))
+bulk.append(Atom("H", position=[    0, 3*pos, 2*pos]))
+bulk.append(Atom("H", position=[5*pos,     0,     0]))
+bulk.append(Atom("H", position=[8*pos, 7*pos,     0]))
+bulk.append(Atom("H", position=[    0, 8*pos, 7*pos]))
 
 bulk.calc = calc
 
@@ -58,20 +62,22 @@ traj_name = "test.traj"
 temperature_K = 1000
 timestep = 1.0*units.fs  # in fs. Use 1 or 0.5 fs.
 t0 = 0.1  # starting time for taking MSD [ps].
+loginterval = 10
 
-steps    = math.ceil((maxtime_ps+t0)/(timestep*1e-3))
-t0_steps = math.ceil(t0/(timestep*1e-3))
+maxtime_ps = maxtime_ps + t0  # extend maxtime_ps as we discard the initial t0 ps
 
-print(f"temperature [K]: {temperature_K}", flush=True)
-print(f"maximum time [ps]: {maxtime_ps}", flush=True)
-print(f"discard initial trajectories for {t0} [ps].", flush=True)
-print(f"steps: {steps}", flush=True)
+steps   = math.ceil(maxtime_ps/(timestep*1e-3))
+t0steps = math.ceil(t0/(timestep*1e-3))
+
+print(f"Temperature [K]: {temperature_K}", flush=True)
+print(f"Maximum time [ps]: {maxtime_ps} (discard initial {t0} [ps])", flush=True)
+print(f"Number of steps: {steps} (calculate), {int(steps/loginterval)} (write to trajectory)", flush=True)
 
 MaxwellBoltzmannDistribution(bulk, temperature_K=temperature_K)
 dyn = Langevin(bulk, timestep=timestep, temperature_K=temperature_K, friction=0.01/units.fs,
-               trajectory="tmp.traj", logfile="md.log", loginterval=10)  # friction: 0.01-0.1
+               trajectory="tmp.traj", logfile="md.log", loginterval=loginterval)  # friction: 0.01-0.1
 # dyn = NVTBerendsen(bulk, timestep=timestep, temperature_K=temperature_K, taut=0.01*(1000*units.fs),
-#                   trajectory="tmp.traj", logfile="md.log", loginterval=10)  # tout: 0.01-0.1
+#                   trajectory="tmp.traj", logfile="md.log", loginterval=loginterval)  # tout: 0.01-0.1
 dyn.run(steps=steps)
 
 # saveing trajectory file with some interval, as the file becomes too big
@@ -84,15 +90,16 @@ traj = read("tmp.traj", ":")
 H_index = [i for i, x in enumerate(traj[0].get_chemical_symbols()) if x == "H"]
 
 # position of all atoms
-# positions_all = np.array([traj[i].get_positions() for i in range(0, len(traj))])
-positions_all = np.array([traj[i].get_positions() for i in range(t0_steps, steps)])
+start_pos = math.ceil(t0steps/loginterval)  # where to start data
+all_pos   = math.ceil(steps/loginterval)    # should be same with len(traj)
+positions_all = np.array([traj[i].get_positions() for i in range(start_pos, all_pos)])
 
 # position of H
 positions = positions_all[:, H_index]
 
 # total msd. sum along xyz axis & mean along Li atoms axis.
-msd = np.mean(np.sum((positions-positions[0])**2, axis=2), axis=1)
-time = np.linspace(t0, maxtime_ps, len(msd))
+msd  = np.mean(np.sum((positions-positions[start_pos])**2, axis=2), axis=1)
+time = np.linspace(0, maxtime_ps, len(msd))
 
 model = sm.OLS(msd, time)
 result = model.fit()

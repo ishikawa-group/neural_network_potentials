@@ -1,5 +1,5 @@
-amp: false
-checkpoint: ../pretrained_checkpoints/painn_h512_s2ef_all.pt
+amp: true
+checkpoint: ../pretrained_checkpoints/gnoc_oc22_oc20_all_s2ef.pt
 dataset:
   train:
     a2g_args:
@@ -32,18 +32,63 @@ loss_fns:
     coefficient: 1
     fn: mae
 - forces:
-    coefficient: 100
+    coefficient: 1
     fn: l2mae
 model:
+  activation: silu
+  atom_edge_interaction: true
+  atom_interaction: true
+  cbf:
+    name: spherical_harmonics
   cutoff: 12.0
+  cutoff_aeaint: 12.0
+  cutoff_aint: 12.0
+  cutoff_qint: 12.0
   direct_forces: true
-  hidden_channels: 512
-  max_neighbors: 50
-  name: painn
-  num_layers: 6
-  num_rbf: 128
+  edge_atom_interaction: true
+  emb_size_aint_in: 64
+  emb_size_aint_out: 64
+  emb_size_atom: 256
+  emb_size_cbf: 16
+  emb_size_edge: 512
+  emb_size_quad_in: 32
+  emb_size_quad_out: 32
+  emb_size_rbf: 16
+  emb_size_sbf: 32
+  emb_size_trip_in: 64
+  emb_size_trip_out: 64
+  envelope:
+    exponent: 5
+    name: polynomial
+  extensive: true
+  forces_coupled: false
+  max_neighbors: 30
+  max_neighbors_aeaint: 20
+  max_neighbors_aint: 1000
+  max_neighbors_qint: 8
+  name: gemnet_oc
+  num_after_skip: 2
+  num_atom: 3
+  num_atom_emb_layers: 2
+  num_before_skip: 2
+  num_blocks: 4
+  num_concat: 1
+  num_global_out_layers: 2
+  num_output_afteratom: 3
+  num_radial: 128
+  num_spherical: 7
   otf_graph: true
+  output_init: HeOrthogonal
+  qint_tags:
+  - 1
+  - 2
+  quad_interaction: true
+  rbf:
+    name: gaussian
   regress_forces: true
+  sbf:
+    name: legendre_outer
+  symmetric_edge_symmetrization: false
   use_pbc: true
 noddp: false
 optim:
@@ -51,15 +96,14 @@ optim:
   clip_grad_norm: 10
   ema_decay: 0.999
   energy_coefficient: 1
-  eval_batch_size: 32
+  eval_batch_size: 16
   eval_every: 10
   factor: 0.8
-  force_coefficient: 100
+  force_coefficient: 1
   load_balancing: atoms
   loss_energy: mae
-  loss_force: l2mae
-  lr_gamma: 0.8
-  lr_initial: 0.0001
+  loss_force: atomwisel2
+  lr_initial: 0.0005
   max_epochs: 1
   mode: min
   num_workers: 0
