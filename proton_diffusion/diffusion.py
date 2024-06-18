@@ -34,7 +34,8 @@ show_plot = args.show_plot
 
 cpline  = subprocess.check_output(["grep", "checkpoint_dir", "train.txt"])
 cpdir   = cpline.decode().strip().replace(" ", "").split(":")[-1]
-checkpoint_path = cpdir + "/checkpoint.pt"
+# checkpoint_path = cpdir + "/checkpoint.pt"
+checkpoint_path = cpdir + "/best_checkpoint.pt"
 
 calc = OCPCalculator(checkpoint_path=checkpoint_path, cpu=False)
 
@@ -57,6 +58,9 @@ bulk.append(Atom("H", position=[8*pos, 7*pos,     0]))
 bulk.append(Atom("H", position=[    0, 8*pos, 7*pos]))
 
 bulk.calc = calc
+
+tags = np.ones(len(bulk))
+bulk.set_tags(tags)
 
 traj_name = "test.traj"
 temperature_K = 1000

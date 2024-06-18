@@ -6,8 +6,8 @@ logs/
 tmp.*
 train.txt
 out*.txt
-*.traj
 *.pt
+*.traj
 *.log
 *.lmdb
 *.e[0-9]*

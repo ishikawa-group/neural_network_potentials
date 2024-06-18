@@ -1,7 +1,7 @@
 #!/bin/sh
 #$ -cwd
 #$ -l gpu_h=1
-#$ -l h_rt=00:30:00
+#$ -l h_rt=02:00:00
 
 # loading CUDA
 module load cuda
@@ -13,7 +13,8 @@ pip install -r ../requirements.txt
 
 maxtime_ps=2.0
 
-python make_lmdb_from_outcar.py >& out1.txt
+python make_lmdb_from_outcar.py >& out1.txt   # using LMDB
+# python make_asedb_from_outcar.py >& out1.txt   # using ASEDB
 python finetuning.py >& out2.txt
 python diffusion.py --maxtime_ps ${maxtime_ps} >& out3.txt
 

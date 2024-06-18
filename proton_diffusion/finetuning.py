@@ -18,43 +18,44 @@ import matplotlib.pyplot as plt
 subprocess.run("rm -rf ./checkpoints/*", shell=True)
 
 # pretrained_model = "DimeNet++-S2EF-ODAC"  # bad
-# pretrained_model = "PaiNN-S2EF-OC20-All"
-pretrained_model = "GemNet-OC-S2EFS-OC20+OC22"  # takes time
+pretrained_model = "PaiNN-S2EF-OC20-All"
+# pretrained_model = "GemNet-OC-S2EFS-OC20+OC22"  # takes time
+# pretrained_model = "GemNet-OC-S2EFS-OC22"
 
 checkpoint_path = model_name_to_local_file(model_name=pretrained_model, local_cache="../pretrained_checkpoints")
 
-# --- when using ASE database
+use_asedb = False  # when using ASE database
 
-# subprocess.run("rm -rf train.db test.db val.db *.db.lock", shell=True)
-train, test, val = train_test_val_split("bulk.db")  # when using ASE database
+if use_asedb:
+    subprocess.run("rm -rf train.db test.db val.db *.db.lock", shell=True)
+    train, test, val = train_test_val_split("bulk.db")  # when using ASE database
 
 yml = "config.yml"
 subprocess.run(["rm", yml])
 
 # --- training and validation data are always necessary!
 generate_yml_config(checkpoint_path=checkpoint_path, yml=yml,
-                    delete=["slurm", "cmd", "logger", "task", "model_attributes",  "task",
+                    delete=["slurm", "cmd", "logger", "task", # "model_attributes",
                             "dataset", "test_dataset", "val_dataset"],
                     update={"gpus": 0,
                             "trainer": "ocp",
 
+                            # "model.cutoff": 12.0,
+                            # "model.use_pbc": True,
 
-                            "model.cutoff": 12.0,   # do not change
-                            "model.use_pbc": True,  # always make this True.
+                            # "eval_metrics.primary_metric": "forces_mae",
 
-                            "eval_metrics.primary_metric": "forces_mae",
-
-                            "task.dataset": "ase_db",
-                            # "task.dataset": "lmdb",
-                            "optim.eval_every": 10,
+                            # "task.dataset": "ase_db",
+                            "task.dataset": "lmdb",
+                            "optim.eval_every": 1,
                             "optim.max_epochs": 1,
                             "optim.num_workers": 0,
                             "optim.batch_size": 20,  # number of samples in one batch ... maybe
 
                             "logger": "tensorboard",
 
-                            "dataset.train.src": "train.db",
-                            # "dataset.train.src": "../data/s2ef/mytrain",
+                            # "dataset.train.src": "train.db",
+                            "dataset.train.src": "../data/s2ef/mytrain",
                             "dataset.train.a2g_args.r_energy": True,
                             "dataset.train.a2g_args.r_forces": True,
 
@@ -62,8 +63,8 @@ generate_yml_config(checkpoint_path=checkpoint_path, yml=yml,
                             # "dataset.test.a2g_args.r_energy": False,
                             # "dataset.test.a2g_args.r_forces": False,
 
-                            "dataset.val.src": "val.db",
-                            # "dataset.val.src": "../data/s2ef/myval",
+                            # "dataset.val.src": "val.db",
+                            "dataset.val.src": "../data/s2ef/myval",
                             "dataset.val.a2g_args.r_energy": True,
                             "dataset.val.a2g_args.r_forces": True,
                             }
@@ -80,3 +81,4 @@ cpdir   = cpline.decode().strip().replace(" ", "").split(":")[-1]
 newchk  = cpdir + "/checkpoint.pt"
 
 print(f"new checkpoint: {os.path.abspath(newchk)}")
+
