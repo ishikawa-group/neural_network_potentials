@@ -18,9 +18,9 @@ import matplotlib.pyplot as plt
 subprocess.run("rm -rf ./checkpoints/*", shell=True)
 
 # pretrained_model = "DimeNet++-S2EF-ODAC"  # bad
-pretrained_model = "PaiNN-S2EF-OC20-All"
-# pretrained_model = "GemNet-OC-S2EFS-OC20+OC22"  # takes time
+# pretrained_model = "PaiNN-S2EF-OC20-All"
 # pretrained_model = "GemNet-OC-S2EFS-OC22"
+# pretrained_model = "GemNet-OC-S2EFS-OC20+OC22"  # takes time
 
 checkpoint_path = model_name_to_local_file(model_name=pretrained_model, local_cache="../pretrained_checkpoints")
 
@@ -35,15 +35,15 @@ subprocess.run(["rm", yml])
 
 # --- training and validation data are always necessary!
 generate_yml_config(checkpoint_path=checkpoint_path, yml=yml,
-                    delete=["slurm", "cmd", "logger", "task", # "model_attributes",
+                    delete=["slurm", "cmd", "logger", "task",  # "model_attributes",
                             "dataset", "test_dataset", "val_dataset"],
                     update={"gpus": 0,
                             "trainer": "ocp",
 
-                            # "model.cutoff": 12.0,
-                            # "model.use_pbc": True,
-
                             # "eval_metrics.primary_metric": "forces_mae",
+
+                            # "model.cutoff": 12.0,   # do not change
+                            # "model.use_pbc": True,  # always make this True.
 
                             # "task.dataset": "ase_db",
                             "task.dataset": "lmdb",
@@ -81,4 +81,3 @@ cpdir   = cpline.decode().strip().replace(" ", "").split(":")[-1]
 newchk  = cpdir + "/checkpoint.pt"
 
 print(f"new checkpoint: {os.path.abspath(newchk)}")
-

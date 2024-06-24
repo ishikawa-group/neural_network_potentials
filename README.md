@@ -324,6 +324,8 @@ dataset:
 
 * You can find examples configuration files in `configs/s2ef`
 * The checkpoint is stored in `checkpoints/[TIMESTAMP]/checkpoint.pt`
+* The "checkpoint.pt" is the checkpoint at the last step, while "best_checkpoint.pt" is that for smallest validation error.
+  Thus it is better to use "best_checkpoint.pt" in principle.
 * Next, run this model on the test data: `python main.py --mode predict --config-yml configs/s2ef/2M/schnet/schnet.yml \
         --checkpoint checkpoints/[TIMESTAMP]/checkpoint.pt`
 * The predictions are stored in `[RESULTS_DIR]/ocp_predictions.npz`

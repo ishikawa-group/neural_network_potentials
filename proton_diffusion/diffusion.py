@@ -22,7 +22,12 @@ from fairchem.core.common.relaxation.ase_utils import OCPCalculator
 
 # --- when using non-fine-tuned NNP
 # model_name = "PaiNN-S2EF-OC20-All"
-# checkpoint_path = model_name_to_local_file(model_name=model_name, local_cache="../checkpoints")
+model_name = "GemNet-OC-S2EFS-OC20+OC22"
+checkpoint_path = model_name_to_local_file(model_name=model_name, local_cache="../checkpoints")
+
+# cpline  = subprocess.check_output(["grep", "checkpoint_dir", "train.txt"])
+# cpdir   = cpline.decode().strip().replace(" ", "").split(":")[-1]
+# checkpoint_path = cpdir + "/checkpoint.pt"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--maxtime_ps", default=1)
@@ -78,10 +83,10 @@ print(f"Maximum time [ps]: {maxtime_ps} (discard initial {t0} [ps])", flush=True
 print(f"Number of steps: {steps} (calculate), {int(steps/loginterval)} (write to trajectory)", flush=True)
 
 MaxwellBoltzmannDistribution(bulk, temperature_K=temperature_K)
-dyn = Langevin(bulk, timestep=timestep, temperature_K=temperature_K, friction=0.01/units.fs,
-               trajectory="tmp.traj", logfile="md.log", loginterval=loginterval)  # friction: 0.01-0.1
-# dyn = NVTBerendsen(bulk, timestep=timestep, temperature_K=temperature_K, taut=0.01*(1000*units.fs),
-#                   trajectory="tmp.traj", logfile="md.log", loginterval=loginterval)  # tout: 0.01-0.1
+# dyn = Langevin(bulk, timestep=timestep, temperature_K=temperature_K, friction=0.01/units.fs,
+#               trajectory="tmp.traj", logfile="md.log", loginterval=loginterval)  # friction: 0.01-0.1
+dyn = NVTBerendsen(bulk, timestep=timestep, temperature_K=temperature_K, taut=0.01*(1000*units.fs),
+                  trajectory="tmp.traj", logfile="md.log", loginterval=loginterval)  # tout: 0.01-0.1
 dyn.run(steps=steps)
 
 # saveing trajectory file with some interval, as the file becomes too big
@@ -123,4 +128,3 @@ if show_plot:
     plt.show()
 
 subprocess.run("rm tmp.traj md.log", shell=True)
-
