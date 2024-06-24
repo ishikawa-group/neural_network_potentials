@@ -6,6 +6,7 @@ logs/
 tmp.*
 train.txt
 out*.txt
+*.db
 *.pt
 *.traj
 *.log

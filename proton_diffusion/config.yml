@@ -1,16 +1,21 @@
 amp: false
 checkpoint: ../pretrained_checkpoints/painn_h512_s2ef_all.pt
 dataset:
+  test:
+    a2g_args:
+      r_energy: false
+      r_forces: false
+    src: test.db
   train:
     a2g_args:
       r_energy: true
       r_forces: true
-    src: ../data/s2ef/mytrain
+    src: train.db
   val:
     a2g_args:
       r_energy: true
       r_forces: true
-    src: ../data/s2ef/myval
+    src: val.db
 evaluation_metrics:
   metrics:
     energy:
@@ -48,7 +53,7 @@ model: &id001
 model_attributes: *id001
 noddp: false
 optim:
-  batch_size: 20
+  batch_size: 10
   clip_grad_norm: 10
   ema_decay: 0.999
   energy_coefficient: 1
@@ -61,7 +66,7 @@ optim:
   loss_force: l2mae
   lr_gamma: 0.8
   lr_initial: 0.0001
-  max_epochs: 1
+  max_epochs: 2
   mode: min
   num_workers: 0
   optimizer: AdamW
@@ -78,5 +83,5 @@ outputs:
     level: atom
     train_on_free_atoms: true
 task:
-  dataset: lmdb
+  dataset: ase_db
 trainer: ocp

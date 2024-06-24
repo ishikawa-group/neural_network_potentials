@@ -41,7 +41,7 @@ calc = OCPCalculator(checkpoint_path=checkpoint_path, cpu=False)
 
 bulk = read("BaZrO3.cif")
 ###
-replicate_size = 4
+replicate_size = 6  # 10 is out of memory. 8 - 1hours
 each = 10  # step to save trajectory
 ###
 replicate = [replicate_size]*3
@@ -98,11 +98,14 @@ start_pos = math.ceil(t0steps/loginterval)  # where to start data
 all_pos   = math.ceil(steps/loginterval)    # should be same with len(traj)
 positions_all = np.array([traj[i].get_positions() for i in range(start_pos, all_pos)])
 
+# shift positions from t0 - last
+positions_all = positions_all[start_pos::]
+
 # position of H
 positions = positions_all[:, H_index]
 
 # total msd. sum along xyz axis & mean along Li atoms axis.
-msd  = np.mean(np.sum((positions-positions[start_pos])**2, axis=2), axis=1)
+msd  = np.mean(np.sum((positions-positions[0])**2, axis=2), axis=1)
 time = np.linspace(0, maxtime_ps, len(msd))
 
 model = sm.OLS(msd, time)
