@@ -3,10 +3,12 @@ from ase.io import read, write
 from ase.build import sort
 
 
-def replace_element(atoms, from_element, to_element, num_replace):
+def replace_element(atoms, from_element, to_element, percent_replace):
     import random
 
     elements = atoms.get_chemical_symbols()
+    num_from_elements = elements.count(from_element)
+    num_replace = int((percent_replace/100) * num_from_elements)
 
     indices = [i for i, j in enumerate(elements) if j == from_element]
     random_item = random.sample(indices, num_replace)
@@ -26,6 +28,7 @@ cell_length = bulk.cell.cellpar()
 xpos = 0.50 * cell_length[0] / replicate_size
 bulk.append(Atom("H", position=[xpos, 0, 0]))
 
-bulk = replace_element(bulk, from_element="Zr", to_element="Y", num_replace=10)
+bulk = replace_element(bulk, from_element="Zr", to_element="Y", percent_replace=20)
 
 write("POSCAR", bulk)
+
