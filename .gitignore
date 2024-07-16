@@ -3,6 +3,7 @@ downloaded_checkpoints/
 results/
 logs/
 
+POSCAR
 tmp.*
 train.txt
 out*.txt
