@@ -405,4 +405,4 @@ dataset:
 
 ## Troubleshoting
 * `CUDA out of memory. Tried to allocate X.XX GiB. GPU`
-  * Reduce the batch size.
+  * Reduce the batch size in fine-tuning.
