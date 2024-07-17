@@ -402,3 +402,7 @@ dataset:
 * Gemnet-OC-IS2RE-ODAC
 * eSCN-IS2RE-ODAC
 * EquiformerV2-IS2RE-ODAC
+
+## Troubleshoting
+* `CUDA out of memory. Tried to allocate X.XX GiB. GPU`
+  * Reduce the batch size.
