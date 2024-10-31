@@ -1,16 +1,77 @@
-# Using Fairchem (previously OpenCatalystProject) neutral network potentials
+# Neural network potentials
+* This repository summarizes the popular neural network potentials (NNPs) for replacing ab initio calculations.
+* Following NNPs are explained:
+  1. Fairchem (previously OpenCatalystProject)
+  2. M3GNet
+  3. CHGNet
+
+---
+
+# M3GNet
+* Running MD
+```python{cmd}
+from pymatgen.core import Lattice, Structure
+from pymatgen.io.ase import AseAtomsAdaptor
+import matgl
+from matgl.ext.ase import PESCalculator
+import warnings
+
+from ase import units
+from ase.md.nvtberendsen import NVTBerendsen
+from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+
+warnings.simplefilter("ignore")
+
+pot = matgl.load_model("M3GNet-MP-2021.2.8-PES")
+calc = PESCalculator(pot)
+struct = Structure.from_spacegroup("Pm-3m", Lattice.cubic(4.5), ["Cs", "Cl"], [[0, 0, 0], [0.5, 0.5, 0.5]])
+atoms = AseAtomsAdaptor.get_atoms(struct)
+atoms *= [3, 3, 3]
+atoms.set_calculator(calc)
+
+MaxwellBoltzmannDistribution(atoms, temperature_K=500)
+dyn = NVTBerendsen(atoms, 2*units.fs, 500, taut=20*units.fs, trajectory="md.traj")
+dyn.run(300)
+```
+
+```python{cmd}
+from pymatgen.core import Lattice, Structure
+from pymatgen.io.ase import AseAtomsAdaptor
+import matgl
+from matgl.ext.ase import PESCalculator
+import warnings
+
+from ase import units
+from ase.md.nvtberendsen import NVTBerendsen
+from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
+
+warnings.simplefilter("ignore")
+
+pot = matgl.load_model("M3GNet-MP-2021.2.8-PES")
+calc = PESCalculator(pot)
+struct = Structure.from_spacegroup("Pm-3m", Lattice.cubic(4.5), ["Cs", "Cl"], [[0, 0, 0], [0.5, 0.5, 0.5]])
+atoms = AseAtomsAdaptor.get_atoms(struct)
+atoms *= [3, 3, 3]
+atoms.set_calculator(calc)
+
+MaxwellBoltzmannDistribution(atoms, temperature_K=500)
+dyn = NVTBerendsen(atoms, 2*units.fs, 500, taut=20*units.fs, trajectory="md.traj")
+dyn.run(300)
+```
+
+---
+
+# Fairchem
 * This repository is to install, use, and do fine-tuning of Neural Network Potentials (NNPs) in Fairchem.
   * https://github.com/FAIR-Chem/fairchem
 * The practical problem is as follows, and the tutorial for these problems are stored in their own directory.
   1. proton diffusion
 
----
-
-# Modified manual 
+## Modified manual 
 * Following is the summary fairchem manual page.
 * Here, we only treat the **S2EF** mode, as it is the simplest.
 
-# Installation
+## Installation
 1. Install pytorch
 2. Install torch_geometric, torch_scatter, torch_sparse, and torch_cluster
 	* see PyG website
@@ -380,10 +441,12 @@ dataset:
 * PaiNN-S2EF-OC20-All
 * GemNet-OC-S2EF-OC20-2M, GemNet-OC-S2EF-OC20-All, GemNet-OC-S2EF-OC20-All+MD, GemNet-OC-Large-S2EF-OC20-All+MD
 * SCN-S2EF-OC20-2M, SCN-t4-b2-S2EF-OC20-2M, SCN-S2EF-OC20-All+MD
-* eSCN-L4-M2-Lay12-S2EF-OC20-2M, eSCN-L6-M2-Lay12-S2EF-OC20-2M, eSCN-L6-M2-Lay12-S2EF-OC20-All+MD, eSCN-L6-M3-Lay20-S2EF-OC20-All+MD
+* eSCN-L4-M2-Lay12-S2EF-OC20-2M, eSCN-L6-M2-Lay12-S2EF-OC20-2M, eSCN-L6-M2-Lay12-S2EF-OC20-All+MD, 
+  eSCN-L6-M3-Lay20-S2EF-OC20-All+MD
 * EquiformerV2-83M-S2EF-OC20-2M, EquiformerV2-31M-S2EF-OC20-All+MD, EquiformerV2-153M-S2EF-OC20-All+MD
 * SchNet-S2EF-force-only-OC20-All
-* DimeNet++-force-only-OC20-All, DimeNet++-Large-S2EF-force-only-OC20-All, DimeNet++-S2EF-force-only-OC20-20M+Rattled, DimeNet++-S2EF-force-only-OC20-20M+MD
+* DimeNet++-force-only-OC20-All, DimeNet++-Large-S2EF-force-only-OC20-All, DimeNet++-S2EF-force-only-OC20-20M+Rattled, 
+  DimeNet++-S2EF-force-only-OC20-20M+MD
 * CGCNN-IS2RE-OC20-10k, CGCNN-IS2RE-OC20-100k, CGCNN-IS2RE-OC20-All
 * DimeNet-IS2RE-OC20-10k, DimeNet-IS2RE-OC20-100k, DimeNet-IS2RE-OC20-all
 * SchNet-IS2RE-OC20-10k, SchNet-IS2RE-OC20-100k, SchNet-IS2RE-OC20-All
@@ -391,7 +454,8 @@ dataset:
 * PaiNN-IS2RE-OC20-All
 
 ### OC22
-* GemNet-dT-S2EFS-OC22, GemNet-OC-S2EFS-OC22, GemNet-OC-S2EFS-OC20+OC22, GemNet-OC-S2EFS-nsn-OC20+OC22, GemNet-OC-S2EFS-OC20->OC22 
+* GemNet-dT-S2EFS-OC22, GemNet-OC-S2EFS-OC22, GemNet-OC-S2EFS-OC20+OC22, GemNet-OC-S2EFS-nsn-OC20+OC22, 
+  GemNet-OC-S2EFS-OC20->OC22 
 * EquiformerV2-lE4-lF100-S2EFS-OC22
 
 ### ODAC
