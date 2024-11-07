@@ -1,0 +1,4 @@
+*.log
+*.traj
+*.pt
+POSCAR

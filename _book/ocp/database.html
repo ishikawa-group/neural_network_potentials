@@ -1,0 +1,555 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <title>Database · HonKit</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 6.0.2">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="training.html" />
+    
+    
+    <link rel="prev" href="pretrained.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../m3gnet/">
+            
+                <a href="../m3gnet/">
+            
+                    
+                    M3GNet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    OCP
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="pretrained.html">
+            
+                <a href="pretrained.html">
+            
+                    
+                    Using pretrained models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.3.2" data-path="database.html">
+            
+                <a href="database.html">
+            
+                    
+                    Database
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="training.html">
+            
+                <a href="training.html">
+            
+                    
+                    Fine-tuning
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            Published with HonKit
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Database</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="making-and-using-ase-datasets">Making and using ASE datasets</h1>
+<ul>
+<li>There are multiple ways to train and evaluate FAIRChem models on data other than OC20 and OC22.</li>
+<li>ASE-based dataset formats are also included as a convenience without using LMDBs.</li>
+</ul>
+<h2 id="using-an-ase-database-ase-db">Using an ASE Database (ASE-DB)</h2>
+<ul>
+<li>If your data is already in an ASE Database, no additional preprocessing is necessary before running training/prediction!</li>
+<li>If you want to effectively utilize more resources than this, consider writing your data to an LMDB.</li>
+<li>If your dataset is small enough to fit in CPU memory, use the <code>keep_in_memory: True</code> option to avoid this bottleneck.</li>
+<li>To use ASE-DB, we will just have to change our config files as</li>
+</ul>
+<pre><code class="lang-yaml"><span class="hljs-attr">dataset:</span>
+  <span class="hljs-attr">format:</span> <span class="hljs-string">ase_db</span>
+  <span class="hljs-attr">train:</span>
+    <span class="hljs-attr">src:</span> <span class="hljs-comment"># The path/address to your ASE DB</span>
+    <span class="hljs-attr">connect_args:</span>
+      <span class="hljs-comment"># Keyword arguments for ase.db.connect()</span>
+    <span class="hljs-attr">select_args:</span>
+      <span class="hljs-comment"># Keyword arguments for ase.db.select()</span>
+      <span class="hljs-comment"># These can be used to query/filter the ASE DB</span>
+    <span class="hljs-attr">a2g_args:</span>
+      <span class="hljs-attr">r_energy:</span> <span class="hljs-literal">True</span>
+      <span class="hljs-attr">r_forces:</span> <span class="hljs-literal">True</span>
+      <span class="hljs-comment"># Set these if you want to train on energy/forces</span>
+      <span class="hljs-comment"># Energy/force information must be in the ASE DB!</span>
+    <span class="hljs-attr">keep_in_memory:</span> <span class="hljs-literal">False</span>  <span class="hljs-comment"># fast but only used for small datasets</span>
+    <span class="hljs-attr">include_relaxed_energy:</span> <span class="hljs-literal">False</span>  <span class="hljs-comment"># Read the last structure's energy and save as "y_relaxed" for IS2RE</span>
+  <span class="hljs-attr">val:</span>
+    <span class="hljs-attr">src:</span>
+    <span class="hljs-attr">a2g_args:</span>
+      <span class="hljs-attr">r_energy:</span> <span class="hljs-literal">True</span>
+      <span class="hljs-attr">r_forces:</span> <span class="hljs-literal">True</span>
+  <span class="hljs-attr">test:</span>
+    <span class="hljs-attr">src:</span>
+    <span class="hljs-attr">a2g_args:</span>
+      <span class="hljs-attr">r_energy:</span> <span class="hljs-literal">False</span>
+      <span class="hljs-attr">r_forces:</span> <span class="hljs-literal">False</span>
+      <span class="hljs-comment"># It is not necessary to have energy or forces when making predictions</span>
+</code></pre>
+<h2 id="using-ase-readable-files">Using ASE-Readable Files</h2>
+<ul>
+<li>It is possible to train/predict directly on ASE-readable files.</li>
+<li>This is only recommended for smaller datasets, as directories of many small files do not scale efficiently.</li>
+<li><p>There are two options for loading data with the ASE reader:</p>
+</li>
+<li><p>Single-Structure Files</p>
+</li>
+<li>This dataset assumes a single structure will be obtained from each file.</li>
+</ul>
+<pre><code class="lang-yaml"><span class="hljs-attr">dataset:</span>
+  <span class="hljs-attr">format:</span> <span class="hljs-string">ase_read</span>
+  <span class="hljs-attr">train:</span>
+    <span class="hljs-attr">src:</span> <span class="hljs-comment"># The folder that contains ASE-readable files</span>
+    <span class="hljs-attr">pattern:</span> <span class="hljs-comment"># Pattern matching each file you want to read (e.g. "*/POSCAR"). Search recursively with two wildcards: "**/*.cif".</span>
+    <span class="hljs-attr">include_relaxed_energy:</span> <span class="hljs-literal">False</span> <span class="hljs-comment"># Read the last structure's energy and save as "y_relaxed" for IS2RE-Direct training</span>
+
+    <span class="hljs-attr">ase_read_args:</span>
+      <span class="hljs-comment"># Keyword arguments for ase.io.read()</span>
+    <span class="hljs-attr">a2g_args:</span>
+      <span class="hljs-comment"># Include energy and forces for training purposes</span>
+      <span class="hljs-comment"># If True, the energy/forces must be readable from the file (ex. OUTCAR)</span>
+      <span class="hljs-attr">r_energy:</span> <span class="hljs-literal">True</span>
+      <span class="hljs-attr">r_forces:</span> <span class="hljs-literal">True</span>
+    <span class="hljs-attr">keep_in_memory:</span> <span class="hljs-literal">False</span>
+</code></pre>
+<ol>
+<li>Multi-structure Files</li>
+<li>This dataset supports reading files that each contain multiple structure (for example, an ASE.traj file).</li>
+<li>Using an index file, which tells the dataset how many structures each file contains, is recommended.</li>
+<li>Otherwise, the dataset is forced to load every file at startup and count the number of structures!</li>
+</ol>
+<pre><code class="lang-yaml"><span class="hljs-attr">dataset:</span>
+  <span class="hljs-attr">format:</span> <span class="hljs-string">ase_read_multi</span>
+  <span class="hljs-attr">train:</span>
+    <span class="hljs-attr">index_file:</span> <span class="hljs-comment"># Filepath to an index file which contains each filename and the number of structures in each file. e.g.:</span>
+            <span class="hljs-comment"># /path/to/relaxation1.traj 200</span>
+            <span class="hljs-comment"># /path/to/relaxation2.traj 150</span>
+            <span class="hljs-comment"># ...</span>
+    <span class="hljs-comment"># If using an index file, the src and pattern are not necessary</span>
+    <span class="hljs-attr">src:</span> <span class="hljs-comment"># The folder that contains ASE-readable files</span>
+    <span class="hljs-attr">pattern:</span> <span class="hljs-comment"># Pattern matching each file you want to read (e.g. "*.traj"). Search recursively with two wildcards: "**/*.xyz".</span>
+
+    <span class="hljs-attr">ase_read_args:</span>
+      <span class="hljs-comment"># Keyword arguments for ase.io.read()</span>
+    <span class="hljs-attr">a2g_args:</span>
+      <span class="hljs-comment"># Include energy and forces for training purposes</span>
+      <span class="hljs-attr">r_energy:</span> <span class="hljs-literal">True</span>
+      <span class="hljs-attr">r_forces:</span> <span class="hljs-literal">True</span>
+    <span class="hljs-attr">keep_in_memory:</span> <span class="hljs-literal">False</span>
+</code></pre>
+<h1 id="making-lmdb-datasets-original-format-deprecated-for-ase-lmdbs">Making LMDB Datasets (original format, deprecated for ASE LMDBs)</h1>
+<ul>
+<li>Storing your data in an LMDB ensures very fast random read speeds for the fastest supported throughput.</li>
+<li>This was the recommended option for the majority of fairchem use cases, but has since been deprecated for ASE LMDB files</li>
+<li>This notebook provides an overview of how to create LMDB datasets to be used with the FAIRChem repo.</li>
+<li>The corresponding Python script: <code>make_lmdb.py</code></li>
+</ul>
+<h2 id="making-dataset--an-example-of-using-emt">Making dataset : An example of using EMT</h2>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> fairchem.core.preprocessing <span class="hljs-keyword">import</span> AtomsToGraphs
+<span class="hljs-keyword">from</span> fairchem.core.datasets <span class="hljs-keyword">import</span> LmdbDataset
+<span class="hljs-keyword">import</span> ase.io
+<span class="hljs-keyword">from</span> ase.build <span class="hljs-keyword">import</span> bulk
+<span class="hljs-keyword">from</span> ase.build <span class="hljs-keyword">import</span> fcc100, add_adsorbate, molecule
+<span class="hljs-keyword">from</span> ase.constraints <span class="hljs-keyword">import</span> FixAtoms
+<span class="hljs-keyword">from</span> ase.calculators.emt <span class="hljs-keyword">import</span> EMT
+<span class="hljs-keyword">from</span> ase.optimize <span class="hljs-keyword">import</span> BFGS
+<span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+<span class="hljs-keyword">import</span> lmdb
+<span class="hljs-keyword">import</span> pickle
+<span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm
+<span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">import</span> os
+
+<span class="hljs-comment"># Generate toy dataset: Relaxation of CO on Cu</span>
+adslab = fcc100(<span class="hljs-string">"Cu"</span>, size=(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>))
+ads = molecule(<span class="hljs-string">"CO"</span>)
+add_adsorbate(adslab, ads, <span class="hljs-number">3</span>, offset=(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>))
+cons = FixAtoms(indices=[atom.index <span class="hljs-keyword">for</span> atom <span class="hljs-keyword">in</span> adslab <span class="hljs-keyword">if</span> (atom.tag == <span class="hljs-number">3</span>)])
+adslab.set_constraint(cons)
+adslab.center(vacuum=<span class="hljs-number">13.0</span>, axis=<span class="hljs-number">2</span>)
+adslab.set_pbc(<span class="hljs-literal">True</span>)
+adslab.set_calculator(EMT())
+
+dyn = BFGS(adslab, trajectory=<span class="hljs-string">"CuCO_adslab.traj"</span>, logfile=<span class="hljs-literal">None</span>)
+dyn.run(fmax=<span class="hljs-number">0</span>, steps=<span class="hljs-number">1000</span>)
+raw_data = ase.io.read(<span class="hljs-string">"CuCO_adslab.traj"</span>, <span class="hljs-string">":"</span>)
+</code></pre>
+<h3 id="initialize-atomstograph-feature-extractor">Initialize AtomsToGraph feature extractor</h3>
+<ul>
+<li>S2EF LMDBs utilize the TrajectoryLmdb dataset. This dataset expects a directory of LMDB files.</li>
+<li>We need to define <code>AtomsToGraph</code>. Its attributes are:<ul>
+<li>pos_relaxed: Relaxed adslab positions</li>
+<li>sid: Unique system identifier, arbitrary</li>
+<li>y_init: Initial adslab energy, formerly Data.y</li>
+<li>y_relaxed: Relaxed adslab energy</li>
+<li>tags (optional): 0 - subsurface, 1 - surface, 2 - adsorbate</li>
+<li>fid: Frame index along the trajcetory</li>
+</ul>
+</li>
+<li>Additionally, a “length” key must be added to each LMDB file.</li>
+<li><pre><code class="lang-python">a2g = AtomsToGraphs(
+  max_neigh=<span class="hljs-number">50</span>,
+  radius=<span class="hljs-number">6</span>,
+  r_energy=<span class="hljs-literal">True</span>,    <span class="hljs-comment"># False for test data</span>
+  r_forces=<span class="hljs-literal">True</span>,    <span class="hljs-comment"># False for test data</span>
+  r_distances=<span class="hljs-literal">False</span>,
+  r_fixed=<span class="hljs-literal">True</span>,
+)
+</code></pre>
+</li>
+</ul>
+<h3 id="initialize-lmdb-file">Initialize LMDB file</h3>
+<ul>
+<li>Let's initialize the LMDB file, under some directory.</li>
+</ul>
+<pre><code class="lang-python">os.makedirs(<span class="hljs-string">"data/s2ef"</span>, exist_ok=<span class="hljs-literal">True</span>)
+
+db = lmdb.<span class="hljs-built_in">open</span>(
+    <span class="hljs-string">"data/s2ef/sample_CuCO.lmdb"</span>,
+    map_size=<span class="hljs-number">1099511627776</span>*<span class="hljs-number">2</span>,
+    subdir=<span class="hljs-literal">False</span>,
+    meminit=<span class="hljs-literal">False</span>,
+    map_async=<span class="hljs-literal">True</span>,
+)
+</code></pre>
+<h2 id="write-to-lmdbs">Write to LMDBs</h2>
+<ul>
+<li>Now write the data in the trajectory file to LMDBs.</li>
+</ul>
+<pre><code class="lang-python">tags = raw_data[<span class="hljs-number">0</span>].get_tags()
+data_objects = a2g.convert_all(raw_data, disable_tqdm=<span class="hljs-literal">True</span>)
+
+<span class="hljs-keyword">for</span> fid, data <span class="hljs-keyword">in</span> tqdm(<span class="hljs-built_in">enumerate</span>(data_objects), total=<span class="hljs-built_in">len</span>(data_objects)):
+    <span class="hljs-comment"># assign sid</span>
+    data.sid = torch.LongTensor([<span class="hljs-number">0</span>])
+
+    <span class="hljs-comment"># assign fid</span>
+    data.fid = torch.LongTensor([fid])
+
+    <span class="hljs-comment"># assign tags, if available</span>
+    data.tags = torch.LongTensor(tags)
+
+    <span class="hljs-comment"># Filter data if necessary</span>
+    <span class="hljs-comment"># FAIRChem filters adsorption energies &gt; |10| eV and forces &gt; |50| eV/A</span>
+
+    <span class="hljs-comment"># no neighbor edge case check</span>
+    <span class="hljs-keyword">if</span> data.edge_index.shape[<span class="hljs-number">1</span>] == <span class="hljs-number">0</span>:
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">"no neighbors"</span>, traj_path)
+        <span class="hljs-keyword">continue</span>
+
+    txn = db.begin(write=<span class="hljs-literal">True</span>)
+    txn.put(<span class="hljs-string">f"<span class="hljs-subst">{fid}</span>"</span>.encode(<span class="hljs-string">"ascii"</span>), pickle.dumps(data, protocol=-<span class="hljs-number">1</span>))
+    txn.commit()
+
+txn = db.begin(write=<span class="hljs-literal">True</span>)
+txn.put(<span class="hljs-string">f"length"</span>.encode(<span class="hljs-string">"ascii"</span>), pickle.dumps(<span class="hljs-built_in">len</span>(data_objects), protocol=-<span class="hljs-number">1</span>))
+txn.commit()
+
+db.sync()
+db.close()
+
+dataset = LmdbDataset({<span class="hljs-string">"src"</span>: <span class="hljs-string">"s2ef/"</span>})
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="pretrained.html" class="navigation navigation-prev " aria-label="Previous page: Using pretrained models">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="training.html" class="navigation navigation-next " aria-label="Next page: Fine-tuning">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Database","level":"1.3.2","depth":2,"next":{"title":"Fine-tuning","level":"1.3.3","depth":2,"path":"ocp/training.md","ref":"./ocp/training.md","articles":[]},"previous":{"title":"Using pretrained models","level":"1.3.1","depth":2,"path":"ocp/pretrained.md","ref":"./ocp/pretrained.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["hide-published-with","copy-code-button","livereload"],"pluginsConfig":{"hide-published-with":{},"copy-code-button":{},"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ocp/database.md","mtime":"2024-11-07T14:33:47.571Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2024-11-07T15:09:16.448Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-hide-published-with/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-copy-code-button/toggle.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

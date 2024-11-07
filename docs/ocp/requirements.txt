@@ -1,0 +1,8 @@
+numpy
+torch==2.3.0
+-f https://data.pyg.org/whl/torch-2.3.0+cu121.html
+torch-scatter
+torch_geometric
+torch_sparse
+fairchem-core
+# urllib3==1.26.11
