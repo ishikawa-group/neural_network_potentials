@@ -3,4 +3,5 @@
 * Webpage: https://ishikawa-group.github.io/neural_network_potentials/
 * Following NNPs are explained:
   1. [M3GNet](./m3gnet/README.md)
-  2. [OpenCatalystProject (Fairchem)](./ocp/README.md)
+  2. [CHGNet](./chgnet/README.md)
+  3. [OpenCatalystProject (Fairchem)](./ocp/README.md)

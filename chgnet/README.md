@@ -23,13 +23,11 @@ print(f"energy = {energy:5.3} eV")
 
 ## Geometry optimization
 ```python
-from ase.calculators.emt import EMT
 from ase.build import fcc111
 from ase.optimize import BFGS
 from ase.constraints import FixAtoms
 from chgnet.model.dynamics import CHGNetCalculator
 from chgnet.model.model import CHGNet
-from pymatgen.io.ase import AseAtomsAdaptor
 
 surf = fcc111(symbol="Pt", size=[1, 1, 4], a=3.9, vacuum=12.0)
 surf.pbc = True
