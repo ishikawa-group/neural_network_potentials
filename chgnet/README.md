@@ -1,6 +1,9 @@
 # CHGNet
 * CHGNet is an universal NNP: https://github.com/CederGroupHub/chgnet
-* Install: `pip install chgnet`
+
+## Install 
+* `pip install chgnet`
+* New version of CHGNet (0.4.0 as of 2025/2/22) requires `torch==2.4.0` or newer. If you use M3GNet in the same environment, this leads the conflict of PyTorch version so one should keep `chgnet==0.3.8`.
 
 ## Energy calculation
 * Single point energy calculation can be done as follows.
@@ -24,7 +27,7 @@ print(f"energy = {energy:5.3} eV")
 ## Geometry optimization
 ```python
 from ase.build import fcc111
-from ase.optimize import BFGS
+from ase.optimize import FIRE
 from ase.constraints import FixAtoms
 from chgnet.model.dynamics import CHGNetCalculator
 from chgnet.model.model import CHGNet
@@ -38,6 +41,6 @@ chgnet = CHGNet.load()
 potential = CHGNetCalculator(potential=chgnet, properties="energy")
 surf.calc = potential
         
-opt = BFGS(surf, trajectory="pt-relax.traj")
+opt = FIRE(surf, trajectory="pt-relax.traj")
 opt.run(fmax=0.05, steps=100)
 ```

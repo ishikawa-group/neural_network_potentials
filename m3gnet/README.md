@@ -1,6 +1,12 @@
 # M3GNet
 * M3GNet is an universal NNP, and is now contained in Materials Graph Library (MatGL): https://matgl.ai/
 
+## Install
+* `pip install matgl`
+* MatGL uses DGL (Deep Graph Library), and DGL does'nt work with the new PyTorch versions. To revolve this,
+  + use python version 3.12
+  + use `torch==2.3.0` and install `dgl==2.2.1` with `pip install dgl==2.2.1 -f https://data.dgl.ai/wheels/repo.html`.
+
 ## Energy calculation
 * Single point energy calculation can be done as follows.
 * Model is built using ASE.
