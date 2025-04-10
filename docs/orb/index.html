@@ -295,7 +295,128 @@
     
                                 <section class="normal markdown-section">
                                 
-                                
+                                <h1 id="orb-models">ORB Models</h1>
+<ul>
+<li><strong>ORB Models</strong> provide pretrained neural network potentials for atomic simulations. They are designed for accurate energy, forces, and stress predictions and are optimized for large-scale simulations on MacOS and Linux.</li>
+<li>GitHub Repository: <a href="https://github.com/orbital-materials/orb-models" target="_blank">https://github.com/orbital-materials/orb-models</a></li>
+</ul>
+<h2 id="install">Install</h2>
+<ul>
+<li>Install the package via pip:<pre><code class="lang-bash">pip install orb-models
+</code></pre>
+</li>
+<li><p><strong>Large-Scale Systems:</strong> For simulations with &#x2273;5k atoms (periodic) or &#x2273;30k atoms (non-periodic), it is recommended to install cuML (requires CUDA). For example:</p>
+<pre><code class="lang-bash"><span class="hljs-comment"># For CUDA versions &gt;=11.4, &lt;11.8:</span>
+pip install --extra-index-url=https://pypi.nvidia.com <span class="hljs-string">&quot;cuml-cu11==25.2.*&quot;</span>
+
+<span class="hljs-comment"># For CUDA versions &gt;=12.0, &lt;13.0:</span>
+pip install --extra-index-url=https://pypi.nvidia.com <span class="hljs-string">&quot;cuml-cu12==25.2.*&quot;</span>
+</code></pre>
+</li>
+<li><p>Note: Orb Models are expected to run on MacOS and Linux. Windows support is not guaranteed.</p>
+</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<h3 id="direct-usage">Direct Usage</h3>
+<p>You can directly predict energies, forces, and stress using the pretrained models with the helper functions. For example:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> ase
+<span class="hljs-keyword">from</span> ase.build <span class="hljs-keyword">import</span> bulk
+<span class="hljs-keyword">from</span> orb_models.forcefield <span class="hljs-keyword">import</span> atomic_system, pretrained
+<span class="hljs-keyword">from</span> orb_models.forcefield.base <span class="hljs-keyword">import</span> batch_graphs
+
+device = <span class="hljs-string">&quot;cpu&quot;</span>  <span class="hljs-comment"># Change to &quot;cuda&quot; if GPU is available</span>
+<span class="hljs-comment"># Load a pretrained model (here using the orb-v3 conservative model with unlimited neighbors trained on OMAT24)</span>
+orbff = pretrained.orb_v3_conservative_inf_omat(
+    device=device,
+    precision=<span class="hljs-string">&quot;float32-high&quot;</span>,  <span class="hljs-comment"># Options: &quot;float32-high&quot;, &quot;float32-highest&quot;, or &quot;float64&quot;</span>
+)
+
+<span class="hljs-comment"># Create an ASE atoms object</span>
+atoms = bulk(<span class="hljs-string">&apos;Cu&apos;</span>, <span class="hljs-string">&apos;fcc&apos;</span>, a=<span class="hljs-number">3.58</span>, cubic=<span class="hljs-keyword">True</span>)
+
+<span class="hljs-comment"># Convert ASE atoms to an atom graph representation</span>
+graph = atomic_system.ase_atoms_to_atom_graphs(atoms, orbff.system_config, device=device)
+
+<span class="hljs-comment"># (Optional) Batch multiple graphs for faster inference</span>
+<span class="hljs-comment"># graph = batch_graphs([graph, graph, ...])</span>
+
+result = orbff.predict(graph, split=<span class="hljs-keyword">False</span>)
+
+<span class="hljs-comment"># Convert predictions back to an ASE atoms object</span>
+atoms = atomic_system.atom_graphs_to_ase_atoms(
+    graph,
+    energy=result[<span class="hljs-string">&quot;energy&quot;</span>],
+    forces=result[<span class="hljs-string">&quot;forces&quot;</span>],
+    stress=result[<span class="hljs-string">&quot;stress&quot;</span>]
+)
+</code></pre>
+<h3 id="usage-with-ase-calculator">Usage with ASE Calculator</h3>
+<p>You can also integrate ORB Models with ASE by using the provided calculator:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> ase
+<span class="hljs-keyword">from</span> ase.build <span class="hljs-keyword">import</span> bulk
+<span class="hljs-keyword">from</span> orb_models.forcefield <span class="hljs-keyword">import</span> pretrained
+<span class="hljs-keyword">from</span> orb_models.forcefield.calculator <span class="hljs-keyword">import</span> ORBCalculator
+
+device = <span class="hljs-string">&quot;cpu&quot;</span>  <span class="hljs-comment"># or set to &quot;cuda&quot;</span>
+orbff = pretrained.orb_v3_conservative_inf_omat(
+    device=device,
+    precision=<span class="hljs-string">&quot;float32-high&quot;</span>
+)
+calc = ORBCalculator(orbff, device=device)
+
+atoms = bulk(<span class="hljs-string">&apos;Cu&apos;</span>, <span class="hljs-string">&apos;fcc&apos;</span>, a=<span class="hljs-number">3.58</span>, cubic=<span class="hljs-keyword">True</span>)
+atoms.calc = calc
+
+<span class="hljs-comment"># Compute the potential energy</span>
+print(f<span class="hljs-string">&quot;Energy: {atoms.get_potential_energy()} eV&quot;</span>)
+</code></pre>
+<p>This calculator can be used for geometry optimizations or MD simulations with any ASE-compatible code. For instance, to run a geometry optimization:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> ase.optimize <span class="hljs-keyword">import</span> BFGS
+
+atoms.rattle(<span class="hljs-number">0.5</span>)  <span class="hljs-comment"># Perturb the atomic positions to leave the minimum-energy configuration</span>
+print(<span class="hljs-string">&quot;Rattled Energy:&quot;</span>, atoms.get_potential_energy())
+
+dyn = BFGS(atoms)
+dyn.run(fmax=<span class="hljs-number">0.01</span>)
+print(<span class="hljs-string">&quot;Optimized Energy:&quot;</span>, atoms.get_potential_energy())
+</code></pre>
+<h2 id="floating-point-precision">Floating Point Precision</h2>
+<p>ORB Models support three floating point precision types:</p>
+<ul>
+<li><code>&quot;float32-high&quot;</code> (default for maximal acceleration with Nvidia A100/H100 GPUs)</li>
+<li><code>&quot;float32-highest&quot;</code> (recommended for high-precision properties)</li>
+<li><code>&quot;float64&quot;</code><br>It is recommended to use <code>&quot;float32-high&quot;</code> unless your application requires higher precision.</li>
+</ul>
+<h2 id="finetuning">Finetuning</h2>
+<p>You can finetune a model on your own dataset, which should be formatted as an ASE SQLite database. Use the provided finetuning script:</p>
+<pre><code class="lang-bash">python finetune.py --dataset=&lt;dataset_name&gt; --data_path=&lt;your_data_path&gt; --base_model=&lt;base_model&gt;
+</code></pre>
+<ul>
+<li><strong>base_model</strong> can be one of:<ul>
+<li><code>&quot;orb_v3_conservative_inf_omat&quot;</code></li>
+<li><code>&quot;orb_v3_conservative_20_omat&quot;</code></li>
+<li><code>&quot;orb_v3_direct_inf_omat&quot;</code></li>
+<li><code>&quot;orb_v3_direct_20_omat&quot;</code></li>
+<li><code>&quot;orb_v2&quot;</code></li>
+</ul>
+</li>
+</ul>
+<p>Finetuned model checkpoints will, by default, be saved in the <code>ckpts</code> folder. To load a finetuned model:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> orb_models.forcefield <span class="hljs-keyword">import</span> pretrained
+
+model = getattr(pretrained, <span class="hljs-string">&quot;&lt;base_model&gt;&quot;</span>)(
+    weights_path=<span class="hljs-string">&quot;&lt;path_to_ckpt&gt;&quot;</span>,
+    device=<span class="hljs-string">&quot;cpu&quot;</span>,       <span class="hljs-comment"># or &quot;cuda&quot;</span>
+    precision=<span class="hljs-string">&quot;float32-high&quot;</span>
+)
+</code></pre>
+<p><strong>Caveats:</strong></p>
+<ul>
+<li>The finetuning script assumes the ASE database contains energy, forces, and stress. For molecular data without stress, manual modification is required.</li>
+<li>Early stopping is not implemented by default; you can use the command line argument <code>--save_every_x_epochs</code> for checkpointing and then retrospectively select the best model.</li>
+<li>The default learning rate schedule and training steps may need adjustment for your dataset.</li>
+</ul>
+
                                 
                                 </section>
                             
@@ -338,7 +459,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"ORB","level":"1.7","depth":1,"next":{"title":"OCP","level":"1.8","depth":1,"path":"ocp/README.md","ref":"./ocp/README.md","articles":[{"title":"Using pretrained models","level":"1.8.1","depth":2,"path":"ocp/pretrained.md","ref":"./ocp/pretrained.md","articles":[]},{"title":"Database","level":"1.8.2","depth":2,"path":"ocp/database.md","ref":"./ocp/database.md","articles":[]},{"title":"Fine-tuning","level":"1.8.3","depth":2,"path":"ocp/training.md","ref":"./ocp/training.md","articles":[]}]},"previous":{"title":"MACE","level":"1.6","depth":1,"path":"mace/README.md","ref":"./mace/README.md","articles":[]},"dir":"neutral"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"orb/README.md","mtime":"2025-04-09T13:28:36.385Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T03:54:36.431Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"ORB","level":"1.7","depth":1,"next":{"title":"OCP","level":"1.8","depth":1,"path":"ocp/README.md","ref":"./ocp/README.md","articles":[{"title":"Using pretrained models","level":"1.8.1","depth":2,"path":"ocp/pretrained.md","ref":"./ocp/pretrained.md","articles":[]},{"title":"Database","level":"1.8.2","depth":2,"path":"ocp/database.md","ref":"./ocp/database.md","articles":[]},{"title":"Fine-tuning","level":"1.8.3","depth":2,"path":"ocp/training.md","ref":"./ocp/training.md","articles":[]}]},"previous":{"title":"MACE","level":"1.6","depth":1,"path":"mace/README.md","ref":"./mace/README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"orb/README.md","mtime":"2025-04-10T04:20:51.876Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T04:21:01.753Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
