@@ -6,7 +6,7 @@
         <title>Fine-tuning · HonKit</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
-        <meta name="generator" content="HonKit 6.0.2">
+        <meta name="generator" content="HonKit 3.6.6">
         
         
         
@@ -16,7 +16,7 @@
     
             
                 
-                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-highlight/website.css">
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
                 
             
                 
@@ -24,7 +24,7 @@
                 
             
                 
-                <link rel="stylesheet" href="../gitbook/@honkit/honkit-plugin-fontsettings/website.css">
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
                 
             
         
@@ -55,6 +55,8 @@
     <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
+    
+    <link rel="next" href="../deepmd-kit/" />
     
     
     <link rel="prev" href="database.html" />
@@ -125,12 +127,12 @@
             
         </li>
     
-        <li class="chapter " data-level="1.4" data-path="../deepmd/">
+        <li class="chapter " data-level="1.4" data-path="../mattersim/">
             
-                <a href="../deepmd/">
+                <a href="../mattersim/">
             
                     
-                    DeepMD-kit
+                    Mattersim
             
                 </a>
             
@@ -138,7 +140,46 @@
             
         </li>
     
-        <li class="chapter " data-level="1.5" data-path="./">
+        <li class="chapter " data-level="1.5" data-path="../sevennet/">
+            
+                <a href="../sevennet/">
+            
+                    
+                    SevenNet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../mace/">
+            
+                <a href="../mace/">
+            
+                    
+                    MACE
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../orb/">
+            
+                <a href="../orb/">
+            
+                    
+                    ORB
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="./">
             
                 <a href="./">
             
@@ -152,7 +193,7 @@
             <ul class="articles">
                 
     
-        <li class="chapter " data-level="1.5.1" data-path="pretrained.html">
+        <li class="chapter " data-level="1.8.1" data-path="pretrained.html">
             
                 <a href="pretrained.html">
             
@@ -165,7 +206,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.5.2" data-path="database.html">
+        <li class="chapter " data-level="1.8.2" data-path="database.html">
             
                 <a href="database.html">
             
@@ -178,7 +219,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.5.3" data-path="training.html">
+        <li class="chapter active" data-level="1.8.3" data-path="training.html">
             
                 <a href="training.html">
             
@@ -193,6 +234,19 @@
     
 
             </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../deepmd-kit/">
+            
+                <a href="../deepmd-kit/">
+            
+                    
+                    DeepMD-kit
+            
+                </a>
+            
+
             
         </li>
     
@@ -266,31 +320,31 @@
 <li>In the S2EF task, the model takes the positions of the atoms as input and predicts the adsorption energy and per-atom forces.</li>
 <li>To train a model for the S2EF, you can use the OCPTrainer and TrajectoryLmdb dataset by specifying your configuration file:</li>
 </ul>
-<pre><code class="lang-yaml"><span class="hljs-attr">trainer:</span> <span class="hljs-string">ocp</span>
+<pre><code class="lang-yaml"><span class="hljs-attr">trainer:</span> ocp
 
 <span class="hljs-attr">dataset:</span>
   <span class="hljs-comment"># Training data</span>
-  <span class="hljs-attr">train:</span>
-    <span class="hljs-attr">src:</span> [<span class="hljs-string">Path</span> <span class="hljs-string">to</span> <span class="hljs-string">training</span> <span class="hljs-string">data</span>]
-    <span class="hljs-attr">normalize_labels:</span> <span class="hljs-literal">True</span>
+<span class="hljs-attr">  train:</span>
+<span class="hljs-attr">    src:</span> [Path to training data]
+<span class="hljs-attr">    normalize_labels:</span> <span class="hljs-literal">True</span>
     <span class="hljs-comment"># Mean and standard deviation of energies</span>
-    <span class="hljs-attr">target_mean:</span> <span class="hljs-number">-0.7586356401443481</span>
-    <span class="hljs-attr">target_std:</span> <span class="hljs-number">2.981738567352295</span>
+<span class="hljs-attr">    target_mean:</span> <span class="hljs-bullet">-0.7586356401443481</span>
+<span class="hljs-attr">    target_std:</span> <span class="hljs-number">2.981738567352295</span>
     <span class="hljs-comment"># Mean and standard deviation of forces</span>
-    <span class="hljs-attr">grad_target_mean:</span> <span class="hljs-number">0.0</span>
-    <span class="hljs-attr">grad_target_std:</span> <span class="hljs-number">2.981738567352295</span>
+<span class="hljs-attr">    grad_target_mean:</span> <span class="hljs-number">0.0</span>
+<span class="hljs-attr">    grad_target_std:</span> <span class="hljs-number">2.981738567352295</span>
   <span class="hljs-comment"># Val data (optional)</span>
-  <span class="hljs-attr">val:</span>
-    <span class="hljs-attr">src:</span> [<span class="hljs-string">Path</span> <span class="hljs-string">to</span> <span class="hljs-string">validation</span> <span class="hljs-string">data</span>]
+<span class="hljs-attr">  val:</span>
+<span class="hljs-attr">    src:</span> [Path to validation data]
   <span class="hljs-comment"># Test data (optional)</span>
-  <span class="hljs-attr">test:</span>
-    <span class="hljs-attr">src:</span> [<span class="hljs-string">Path</span> <span class="hljs-string">to</span> <span class="hljs-string">test</span> <span class="hljs-string">data</span>]
+<span class="hljs-attr">  test:</span>
+<span class="hljs-attr">    src:</span> [Path to test data]
 </code></pre>
 <ul>
 <li>You can find examples configuration files in <code>configs/s2ef</code></li>
 <li>The checkpoint is stored in <code>checkpoints/[TIMESTAMP]/checkpoint.pt</code></li>
-<li>The "checkpoint.pt" is the checkpoint at the last step, while "best_checkpoint.pt" is that for smallest validation error.
-Thus it is better to use "best_checkpoint.pt" in principle.</li>
+<li>The &quot;checkpoint.pt&quot; is the checkpoint at the last step, while &quot;best_checkpoint.pt&quot; is that for smallest validation error.
+Thus it is better to use &quot;best_checkpoint.pt&quot; in principle.</li>
 <li>Next, run this model on the test data: `python main.py --mode predict --config-yml configs/s2ef/2M/schnet/schnet.yml \<pre><code>  --checkpoint checkpoints/[TIMESTAMP]/checkpoint.pt`
 </code></pre></li>
 <li>The predictions are stored in <code>[RESULTS_DIR]/ocp_predictions.npz</code></li>
@@ -308,21 +362,21 @@ Thus it is better to use "best_checkpoint.pt" in principle.</li>
 <li>Also, please note that our evaluation server does not currently support OC20 total energy models.</li>
 </ul>
 <pre><code class="lang-yaml"><span class="hljs-attr">task:</span>
-  <span class="hljs-attr">prediction_dtype:</span> <span class="hljs-string">float32</span>
+<span class="hljs-attr">  prediction_dtype:</span> float32
   <span class="hljs-comment"># ...</span>
 
 <span class="hljs-attr">dataset:</span>
-  <span class="hljs-attr">format:</span> <span class="hljs-string">oc22_lmdb</span>
-  <span class="hljs-attr">train:</span>
-    <span class="hljs-attr">src:</span> <span class="hljs-string">data/oc20/s2ef/train</span>
-    <span class="hljs-attr">normalize_labels:</span> <span class="hljs-literal">False</span>
-    <span class="hljs-attr">train_on_oc20_total_energies:</span> <span class="hljs-literal">True</span>
+<span class="hljs-attr">  format:</span> oc22_lmdb
+<span class="hljs-attr">  train:</span>
+<span class="hljs-attr">    src:</span> data/oc20/s2ef/train
+<span class="hljs-attr">    normalize_labels:</span> <span class="hljs-literal">False</span>
+<span class="hljs-attr">    train_on_oc20_total_energies:</span> <span class="hljs-literal">True</span>
     <span class="hljs-comment"># download at https://dl.fbaipublicfiles.com/opencatalystproject/data/oc22/oc20_ref.pkl</span>
-    <span class="hljs-attr">oc20_ref:</span> <span class="hljs-string">path/to/oc20_ref.pkl</span>
-  <span class="hljs-attr">val:</span>
-    <span class="hljs-attr">src:</span> <span class="hljs-string">data/oc20/s2ef/val_id</span>
-    <span class="hljs-attr">train_on_oc20_total_energies:</span> <span class="hljs-literal">True</span>
-    <span class="hljs-attr">oc20_ref:</span> <span class="hljs-string">path/to/oc20_ref.pkl</span>
+<span class="hljs-attr">    oc20_ref:</span> path/to/oc20_ref.pkl
+<span class="hljs-attr">  val:</span>
+<span class="hljs-attr">    src:</span> data/oc20/s2ef/val_id
+<span class="hljs-attr">    train_on_oc20_total_energies:</span> <span class="hljs-literal">True</span>
+<span class="hljs-attr">    oc20_ref:</span> path/to/oc20_ref.pkl
 </code></pre>
 <h2 id="oc22">OC22</h2>
 <h3 id="structure-to-total-energy-and-forces-s2ef-total">Structure to Total Energy and Forces (S2EF-Total)</h3>
@@ -332,8 +386,8 @@ Thus it is better to use "best_checkpoint.pt" in principle.</li>
 <li>To train an OC22 S2EF-Total model, you need the OC22LmdbDataset by including these lines in your configuration file:</li>
 </ul>
 <pre><code class="lang-yaml"><span class="hljs-attr">dataset:</span>
-  <span class="hljs-attr">format:</span> <span class="hljs-string">oc22_lmdb</span> <span class="hljs-comment"># Use the OC22LmdbDataset</span>
-  <span class="hljs-string">...</span>
+<span class="hljs-attr">  format:</span> oc22_lmdb <span class="hljs-comment"># Use the OC22LmdbDataset</span>
+  ...
 </code></pre>
 <ul>
 <li>You can find examples configuration files in <code>configs/oc22/s2ef</code>.</li>
@@ -404,10 +458,14 @@ GemNet-OC-S2EFS-OC20-&gt;OC22 </li>
 
             
                 
-                <a href="database.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Database">
+                <a href="database.html" class="navigation navigation-prev " aria-label="Previous page: Database">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
+                
+                <a href="../deepmd-kit/" class="navigation navigation-next " aria-label="Next page: DeepMD-kit">
+                    <i class="fa fa-angle-right"></i>
+                </a>
                 
             
         
@@ -416,11 +474,7 @@ GemNet-OC-S2EFS-OC20-&gt;OC22 </li>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-<<<<<<< HEAD
-            gitbook.page.hasChanged({"page":{"title":"Fine-tuning","level":"1.4.3","depth":2,"previous":{"title":"Database","level":"1.4.2","depth":2,"path":"ocp/database.md","ref":"./ocp/database.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["hide-published-with"],"pluginsConfig":{"hide-published-with":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ocp/training.md","mtime":"2024-11-07T14:34:02.045Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2025-02-22T14:47:29.526Z"},"basePath":"..","book":{"language":""}});
-=======
-            gitbook.page.hasChanged({"page":{"title":"Fine-tuning","level":"1.5.3","depth":2,"previous":{"title":"Database","level":"1.5.2","depth":2,"path":"ocp/database.md","ref":"./ocp/database.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ocp/training.md","mtime":"2025-02-04T15:15:42.045Z","type":"markdown"},"gitbook":{"version":"6.0.2","time":"2025-02-04T15:37:34.405Z"},"basePath":"..","book":{"language":""}});
->>>>>>> d06dd1db42380b3ec127327244dbab85cc311fa9
+            gitbook.page.hasChanged({"page":{"title":"Fine-tuning","level":"1.8.3","depth":2,"next":{"title":"DeepMD-kit","level":"1.9","depth":1,"path":"deepmd-kit/README.md","ref":"./deepmd-kit/README.md","articles":[]},"previous":{"title":"Database","level":"1.8.2","depth":2,"path":"ocp/database.md","ref":"./ocp/database.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"ocp/training.md","mtime":"2025-02-04T15:15:42.045Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T03:54:36.431Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
@@ -490,7 +544,7 @@ GemNet-OC-S2EFS-OC20-&gt;OC22 </li>
         
     
         
-        <script src="../gitbook/@honkit/honkit-plugin-fontsettings/fontsettings.js"></script>
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
         
     
 

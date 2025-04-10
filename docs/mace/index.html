@@ -1,0 +1,560 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <title>MACE · HonKit</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="HonKit 3.6.6">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../orb/" />
+    
+    
+    <link rel="prev" href="../sevennet/" />
+    
+
+    </head>
+    <body>
+        
+<div class="book honkit-cloak">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../m3gnet/">
+            
+                <a href="../m3gnet/">
+            
+                    
+                    M3GNet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../chgnet/">
+            
+                <a href="../chgnet/">
+            
+                    
+                    CHGNet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../mattersim/">
+            
+                <a href="../mattersim/">
+            
+                    
+                    Mattersim
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../sevennet/">
+            
+                <a href="../sevennet/">
+            
+                    
+                    SevenNet
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    MACE
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../orb/">
+            
+                <a href="../orb/">
+            
+                    
+                    ORB
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../ocp/">
+            
+                <a href="../ocp/">
+            
+                    
+                    OCP
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../ocp/pretrained.html">
+            
+                <a href="../ocp/pretrained.html">
+            
+                    
+                    Using pretrained models
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="../ocp/database.html">
+            
+                <a href="../ocp/database.html">
+            
+                    
+                    Database
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.3" data-path="../ocp/training.html">
+            
+                <a href="../ocp/training.html">
+            
+                    
+                    Fine-tuning
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../deepmd-kit/">
+            
+                <a href="../deepmd-kit/">
+            
+                    
+                    DeepMD-kit
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://github.com/honkit/honkit" target="blank" class="gitbook-link">
+            Published with HonKit
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >MACE</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="mace">MACE</h1>
+<ul>
+<li><strong>MACE</strong> is a higher-order equivariant message passing neural network designed for building fast and accurate machine learning interatomic potentials.</li>
+<li>GitHub Repository: <a href="https://github.com/ACEsuit/mace" target="_blank">https://github.com/ACEsuit/mace</a></li>
+</ul>
+<h2 id="install">Install</h2>
+<ul>
+<li>To install the recommended version (based on PyTorch):<pre><code class="lang-bash">pip install mace-torch
+</code></pre>
+</li>
+<li>If you prefer to install from source or need more detailed installation instructions, please refer to the official documentation: <a href="https://mace-docs.readthedocs.io" target="_blank">MACE Documentation</a></li>
+<li>Note: Ensure your Python version is &#x2265; 3.7 (for openMM, Python 3.9 is recommended) and that your PyTorch version meets the requirements.</li>
+</ul>
+<h2 id="training">Training</h2>
+<ul>
+<li>Train a MACE model using the <code>mace_run_train</code> script. Here is an example:<pre><code class="lang-bash">mace_run_train \
+    --name=<span class="hljs-string">&quot;MACE_model&quot;</span> \
+    --train_file=<span class="hljs-string">&quot;train.xyz&quot;</span> \
+    --valid_fraction=0.05 \
+    --test_file=<span class="hljs-string">&quot;test.xyz&quot;</span> \
+    --config_type_weights=<span class="hljs-string">&apos;{&quot;Default&quot;:1.0}&apos;</span> \
+    --E0s=<span class="hljs-string">&apos;{1:-13.663181292231226, 6:-1029.2809654211628, 7:-1484.1187695035828, 8:-2042.0330099956639}&apos;</span> \
+    --model=<span class="hljs-string">&quot;MACE&quot;</span> \
+    --hidden_irreps=<span class="hljs-string">&apos;128x0e + 128x1o&apos;</span> \
+    --r_max=5.0 \
+    --batch_size=10 \
+    --max_num_epochs=1500 \
+    --stage_two \
+    --start_stage_two=1200 \
+    --ema \
+    --ema_decay=0.99 \
+    --amsgrad \
+    --restart_latest \
+    --device=cuda
+</code></pre>
+</li>
+<li>Alternatively, you can place the parameters in a YAML file and specify it on the command line with <code>--config=&quot;your_configs.yaml&quot;</code> (command line arguments override the YAML settings).</li>
+</ul>
+<h2 id="evaluation">Evaluation</h2>
+<ul>
+<li>Evaluate the trained MACE model (to compute properties on an XYZ file) using the <code>mace_eval_configs</code> script:<pre><code class="lang-bash">mace_eval_configs \
+    --configs=<span class="hljs-string">&quot;your_configs.xyz&quot;</span> \
+    --model=<span class="hljs-string">&quot;your_model.model&quot;</span> \
+    --output=<span class="hljs-string">&quot;./your_output.xyz&quot;</span>
+</code></pre>
+</li>
+</ul>
+<h2 id="example-usage-in-ase">Example Usage in ASE</h2>
+<h3 id="mace-mp-materials-project-potentials">MACE-MP: Materials Project Potentials</h3>
+<ul>
+<li>MACE-MP provides a universal potential trained on Materials Project datasets.</li>
+<li><p>Example code:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> mace.calculators <span class="hljs-keyword">import</span> mace_mp
+<span class="hljs-keyword">from</span> ase <span class="hljs-keyword">import</span> build
+
+<span class="hljs-comment"># Build a water molecule</span>
+atoms = build.molecule(<span class="hljs-string">&apos;H2O&apos;</span>)
+
+<span class="hljs-comment"># Initialize the MACE-MP calculator (using the &quot;medium&quot; model and disabling dispersion corrections)</span>
+calc = mace_mp(model=<span class="hljs-string">&quot;medium&quot;</span>, dispersion=<span class="hljs-keyword">False</span>, default_dtype=<span class="hljs-string">&quot;float32&quot;</span>, device=<span class="hljs-string">&apos;cuda&apos;</span>)
+atoms.calc = calc
+
+energy = atoms.get_potential_energy()
+print(f<span class="hljs-string">&quot;energy = {energy:5.3f} eV&quot;</span>)
+</code></pre>
+</li>
+</ul>
+<h3 id="mace-off-transferable-organic-potentials">MACE-OFF: Transferable Organic Potentials</h3>
+<ul>
+<li>MACE-OFF is designed for organic chemistry systems such as molecules, crystals, and molecular liquids.</li>
+<li><p>Example code:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> mace.calculators <span class="hljs-keyword">import</span> mace_off
+<span class="hljs-keyword">from</span> ase <span class="hljs-keyword">import</span> build
+
+<span class="hljs-comment"># Build a water molecule</span>
+atoms = build.molecule(<span class="hljs-string">&apos;H2O&apos;</span>)
+
+<span class="hljs-comment"># Initialize the MACE-OFF calculator (using the &quot;medium&quot; model)</span>
+calc = mace_off(model=<span class="hljs-string">&quot;medium&quot;</span>, device=<span class="hljs-string">&apos;cuda&apos;</span>)
+atoms.calc = calc
+
+energy = atoms.get_potential_energy()
+print(f<span class="hljs-string">&quot;energy = {energy:5.3f} eV&quot;</span>)
+</code></pre>
+</li>
+</ul>
+<h2 id="pretrained-foundation-models">Pretrained Foundation Models</h2>
+<ul>
+<li>MACE offers several pretrained foundation models targeting different domains:<ul>
+<li><strong>MACE-MP series</strong> (e.g., MACE-MP-0a, MACE-MP-0b3, MACE-MPA-0): for materials science.</li>
+<li><strong>MACE-OFF series</strong>: for organic chemistry.</li>
+</ul>
+</li>
+<li>For the latest releases, please refer to their respective GitHub Release pages:<ul>
+<li>MACE-MP: <a href="https://github.com/ACEsuit/mace-mp" target="_blank">https://github.com/ACEsuit/mace-mp</a></li>
+<li>MACE-OFF: <a href="https://github.com/ACEsuit/mace-off" target="_blank">https://github.com/ACEsuit/mace-off</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="advanced-topics">Advanced Topics</h2>
+<ul>
+<li><strong>Fine-tuning Foundation Models</strong><br>To fine-tune an existing foundation model, specify the additional parameter <code>--foundation_model</code> during training. For example:<pre><code class="lang-bash">mace_run_train \
+    --name=<span class="hljs-string">&quot;MACE&quot;</span> \
+    --foundation_model=<span class="hljs-string">&quot;small&quot;</span> \
+    --train_file=<span class="hljs-string">&quot;train.xyz&quot;</span> \
+    --valid_fraction=0.05 \
+    --test_file=<span class="hljs-string">&quot;test.xyz&quot;</span> \
+    --energy_weight=1.0 \
+    --forces_weight=1.0 \
+    --E0s=<span class="hljs-string">&quot;average&quot;</span> \
+    --lr=0.01 \
+    --scaling=<span class="hljs-string">&quot;rms_forces_scaling&quot;</span> \
+    --batch_size=2 \
+    --max_num_epochs=6 \
+    --ema \
+    --ema_decay=0.99 \
+    --amsgrad \
+    --default_dtype=<span class="hljs-string">&quot;float32&quot;</span> \
+    --device=cuda \
+    --seed=3
+</code></pre>
+</li>
+<li><strong>CUDA Acceleration</strong><br>MACE can leverage the cuEquivariance library for CUDA acceleration. For more details, see <a href="https://mace-docs.readthedocs.io/en/latest/guide/cuda_acceleration.html" target="_blank">CUDA Acceleration</a></li>
+<li><strong>Multi-GPU Training</strong><br>In multi-GPU environments, use the <code>--distributed</code> flag to employ PyTorch&apos;s DistributedDataParallel module.</li>
+<li><strong>Online Data Loading for Large Datasets</strong><br>For very large datasets, it is recommended to preprocess your data using <code>preprocess_data.py</code> and then load data online during training.</li>
+</ul>
+<h2 id="caching--development">Caching &amp; Development</h2>
+<ul>
+<li><strong>Caching</strong><ul>
+<li>By default, automatically downloaded models are saved in <code>~/.cache/mace</code>. You can change the cache path by setting the environment variable <code>XDG_CACHE_HOME</code>.</li>
+</ul>
+</li>
+<li><strong>Development and Code Checking</strong><ul>
+<li>It is recommended to install the development dependencies:<pre><code class="lang-bash">pip install <span class="hljs-_">-e</span> <span class="hljs-string">&quot;.[dev]&quot;</span>
+pre-commit install
+</code></pre>
+</li>
+<li>This project uses tools like black, isort, pylint, and mypy for formatting and static analysis.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>This document is designed to help newcomers quickly understand and start using MACE. For more detailed information and parameter descriptions, please refer to the <a href="https://mace-docs.readthedocs.io" target="_blank">MACE Documentation</a> and the README file in the GitHub repository.</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../sevennet/" class="navigation navigation-prev " aria-label="Previous page: SevenNet">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../orb/" class="navigation navigation-next " aria-label="Next page: ORB">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"MACE","level":"1.6","depth":1,"next":{"title":"ORB","level":"1.7","depth":1,"path":"orb/README.md","ref":"./orb/README.md","articles":[]},"previous":{"title":"SevenNet","level":"1.5","depth":1,"path":"sevennet/README.md","ref":"./sevennet/README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"mace/README.md","mtime":"2025-04-10T02:46:35.110Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T03:54:36.431Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <noscript>
+        <style>
+            .honkit-cloak {
+                display: block !important;
+            }
+        </style>
+    </noscript>
+    <script>
+        // Restore sidebar state as critical path for prevent layout shift
+        function __init__getSidebarState(defaultValue){
+            var baseKey = "";
+            var key = baseKey + ":sidebar";
+            try {
+                var value = localStorage[key];
+                if (value === undefined) {
+                    return defaultValue;
+                }
+                var parsed = JSON.parse(value);
+                return parsed == null ? defaultValue : parsed;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+        function __init__restoreLastSidebarState() {
+            var isMobile = window.matchMedia("(max-width: 600px)").matches;
+            if (isMobile) {
+                // Init last state if not mobile
+                return;
+            }
+            var sidebarState = __init__getSidebarState(true);
+            var book = document.querySelector(".book");
+            // Show sidebar if it enabled
+            if (sidebarState && book) {
+                book.classList.add("without-animation", "with-summary");
+            }
+        }
+
+        try {
+            __init__restoreLastSidebarState();
+        } finally {
+            var book = document.querySelector(".book");
+            book.classList.remove("honkit-cloak");
+        }
+    </script>
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

@@ -3,7 +3,7 @@
 <html lang="" >
     <head>
         <meta charset="UTF-8">
-        <title>CHGNet · HonKit</title>
+        <title>DeepMD-kit · HonKit</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="HonKit 3.6.6">
@@ -56,10 +56,8 @@
     <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="../mattersim/" />
     
-    
-    <link rel="prev" href="../m3gnet/" />
+    <link rel="prev" href="../ocp/training.html" />
     
 
     </head>
@@ -114,9 +112,9 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.3" data-path="./">
+        <li class="chapter " data-level="1.3" data-path="../chgnet/">
             
-                <a href="./">
+                <a href="../chgnet/">
             
                     
                     CHGNet
@@ -237,9 +235,9 @@
             
         </li>
     
-        <li class="chapter " data-level="1.9" data-path="../deepmd-kit/">
+        <li class="chapter active" data-level="1.9" data-path="./">
             
-                <a href="../deepmd-kit/">
+                <a href="./">
             
                     
                     DeepMD-kit
@@ -280,7 +278,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href=".." >CHGNet</a>
+        <a href=".." >DeepMD-kit</a>
     </h1>
 </div>
 
@@ -295,52 +293,92 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="chgnet">CHGNet</h1>
+                                <h1 id="deepmd-kit"><strong>DeePMD-kit</strong></h1>
 <ul>
-<li>CHGNet is an universal NNP: <a href="https://github.com/CederGroupHub/chgnet" target="_blank">https://github.com/CederGroupHub/chgnet</a></li>
+<li><strong>DeePMD-kit</strong> documentation: <a href="https://deepmd.readthedocs.io" target="_blank">https://deepmd.readthedocs.io</a></li>
 </ul>
-<h2 id="install">Install</h2>
-<ul>
-<li><code>pip install chgnet</code></li>
-<li>New version of CHGNet (0.4.0 as of 2025/2/22) requires <code>torch==2.4.0</code> or newer. If you use M3GNet in the same environment, this leads the conflict of PyTorch version so one should keep <code>chgnet==0.3.8</code>.</li>
-</ul>
-<h2 id="energy-calculation">Energy calculation</h2>
-<ul>
-<li>Single point energy calculation can be done as follows.</li>
-<li>Model is built using ASE.</li>
-</ul>
-<pre><code class="lang-python"><span class="hljs-keyword">from</span> ase.build <span class="hljs-keyword">import</span> bulk
-<span class="hljs-keyword">from</span> chgnet.model.dynamics <span class="hljs-keyword">import</span> CHGNetCalculator
-<span class="hljs-keyword">from</span> chgnet.model.model <span class="hljs-keyword">import</span> CHGNet
+<h2 id="1-introduction"><strong>1. Introduction</strong></h2>
+<p>DeePMD-kit is a machine learning-based tool that fits <strong>first-principles</strong> (DFT) potential energy surfaces (PES) to be used in <strong>molecular dynamics (MD)</strong> simulations. It provides <strong>ab initio accuracy</strong> at a fraction of the computational cost and integrates with <strong>LAMMPS, GROMACS, OpenMM</strong>, etc.</p>
+<h2 id="2-workflow-overview"><strong>2. Workflow Overview</strong></h2>
+<ol>
+<li><strong>Prepare Data</strong>: Convert AIMD/DFT data into DeePMD-kit format.</li>
+<li><strong>Train</strong>: Use <code>dp train input.json</code> to fit a model.</li>
+<li><strong>Freeze</strong>: Convert trained models into <code>.pb</code> files.</li>
+<li><strong>Compress</strong> <em>(Optional)</em>: Optimize <code>.pb</code> for efficiency.</li>
+<li><strong>Test</strong>: Validate energy/force predictions.</li>
+<li><strong>Run MD</strong>: Use the trained model in <strong>LAMMPS</strong> via <code>pair_style deepmd</code>.</li>
+</ol>
+<hr>
+<h2 id="3-practical-guide"><strong>3. Practical Guide</strong></h2>
+<h3 id="31-data-preparation"><strong>3.1. Data Preparation</strong></h3>
+<p>Convert first-principles data (e.g., ABACUS MD) to DeePMD-kit format:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> dpdata, numpy <span class="hljs-keyword">as</span> np
 
-solid = bulk(name=<span class="hljs-string">&quot;Pt&quot;</span>, crystalstructure=<span class="hljs-string">&quot;fcc&quot;</span>, a=<span class="hljs-number">3.9</span>)
+data = dpdata.LabeledSystem(<span class="hljs-string">&quot;00.data/abacus_md&quot;</span>, fmt=<span class="hljs-string">&quot;abacus/md&quot;</span>)
+index_val = np.random.choice(len(data), <span class="hljs-number">40</span>, replace=<span class="hljs-keyword">False</span>)
+index_train = list(set(range(len(data))) - set(index_val))
 
-chgnet = CHGNet.load()
-potential = CHGNetCalculator(potential=chgnet, properties=<span class="hljs-string">&quot;energy&quot;</span>)
-solid.calc = potential
-
-energy = solid.get_potential_energy()
-print(f<span class="hljs-string">&quot;energy = {energy:5.3} eV&quot;</span>)
+data.sub_system(index_train).to_deepmd_npy(<span class="hljs-string">&quot;00.data/training_data&quot;</span>)
+data.sub_system(index_val).to_deepmd_npy(<span class="hljs-string">&quot;00.data/validation_data&quot;</span>)
 </code></pre>
-<h2 id="geometry-optimization">Geometry optimization</h2>
-<pre><code class="lang-python"><span class="hljs-keyword">from</span> ase.build <span class="hljs-keyword">import</span> fcc111
-<span class="hljs-keyword">from</span> ase.optimize <span class="hljs-keyword">import</span> FIRE
-<span class="hljs-keyword">from</span> ase.constraints <span class="hljs-keyword">import</span> FixAtoms
-<span class="hljs-keyword">from</span> chgnet.model.dynamics <span class="hljs-keyword">import</span> CHGNetCalculator
-<span class="hljs-keyword">from</span> chgnet.model.model <span class="hljs-keyword">import</span> CHGNet
-
-surf = fcc111(symbol=<span class="hljs-string">&quot;Pt&quot;</span>, size=[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>], a=<span class="hljs-number">3.9</span>, vacuum=<span class="hljs-number">12.0</span>)
-surf.pbc = <span class="hljs-keyword">True</span>
-c = FixAtoms(indices=[atom.index <span class="hljs-keyword">for</span> atom <span class="hljs-keyword">in</span> surf <span class="hljs-keyword">if</span> atom.tag &gt;= <span class="hljs-number">3</span>])
-surf.constraints = c
-
-chgnet = CHGNet.load()
-potential = CHGNetCalculator(potential=chgnet, properties=<span class="hljs-string">&quot;energy&quot;</span>)
-surf.calc = potential
-
-opt = FIRE(surf, trajectory=<span class="hljs-string">&quot;pt-relax.traj&quot;</span>)
-opt.run(fmax=<span class="hljs-number">0.05</span>, steps=<span class="hljs-number">100</span>)
+<h3 id="32-training-configuration"><strong>3.2. Training Configuration</strong></h3>
+<p>Define <code>input.json</code> for training:</p>
+<pre><code class="lang-jsonc">{
+  &quot;model&quot;: {
+    &quot;type_map&quot;: [&quot;H&quot;, &quot;C&quot;],
+    &quot;descriptor&quot;: { &quot;type&quot;: &quot;se_e2_a&quot;, &quot;rcut&quot;: 6.0, &quot;neuron&quot;: [25, 50, 100] },
+    &quot;fitting_net&quot;: { &quot;neuron&quot;: [240, 240, 240] }
+  },
+  &quot;training&quot;: {
+    &quot;training_data&quot;: { &quot;systems&quot;: [&quot;../00.data/training_data&quot;] },
+    &quot;validation_data&quot;: { &quot;systems&quot;: [&quot;../00.data/validation_data&quot;] },
+    &quot;numb_steps&quot;: 10000
+  }
+}
 </code></pre>
+<h3 id="33-train-the-model"><strong>3.3. Train the Model</strong></h3>
+<p>Run:</p>
+<pre><code class="lang-bash">dp train input.json
+</code></pre>
+<p>Monitor training loss in <code>lcurve.out</code>.</p>
+<h3 id="34-freeze--optimize-model"><strong>3.4. Freeze &amp; Optimize Model</strong></h3>
+<p>Convert to a frozen model:</p>
+<pre><code class="lang-bash">dp freeze -o graph.pb
+</code></pre>
+<p>(Optional) Compress the model:</p>
+<pre><code class="lang-bash">dp compress -i graph.pb -o compress.pb
+</code></pre>
+<h3 id="35-model-testing"><strong>3.5. Model Testing</strong></h3>
+<p>Evaluate performance:</p>
+<pre><code class="lang-bash">dp <span class="hljs-built_in">test</span> -m graph.pb <span class="hljs-_">-s</span> ../00.data/validation_data
+</code></pre>
+<p>For visualization:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> dpdata, matplotlib.pyplot <span class="hljs-keyword">as</span> plt
+
+val_system = dpdata.LabeledSystem(<span class="hljs-string">&quot;../00.data/validation_data&quot;</span>, fmt=<span class="hljs-string">&quot;deepmd/npy&quot;</span>)
+prediction = val_system.predict(<span class="hljs-string">&quot;graph.pb&quot;</span>)
+
+plt.scatter(val_system[<span class="hljs-string">&quot;energies&quot;</span>], prediction[<span class="hljs-string">&quot;energies&quot;</span>], alpha=<span class="hljs-number">0.5</span>)
+plt.xlabel(<span class="hljs-string">&quot;DFT Energy (eV)&quot;</span>)
+plt.ylabel(<span class="hljs-string">&quot;DP Predicted Energy (eV)&quot;</span>)
+plt.show()
+</code></pre>
+<h3 id="36-running-md-with-lammps"><strong>3.6. Running MD with LAMMPS</strong></h3>
+<p>Write <code>in.lammps</code>:</p>
+<pre><code class="lang-lammps">units metal
+atom_style atomic
+read_data conf.lmp
+pair_style deepmd graph.pb
+pair_coeff * *
+timestep 0.001
+run 5000
+</code></pre>
+<p>Run:</p>
+<pre><code class="lang-bash">lmp -i in.lammps
+</code></pre>
+<hr>
+<h2 id="4-summary"><strong>4. Summary</strong></h2>
+<p>DeePMD-kit enables efficient <strong>machine learning-based MD simulations</strong> with <strong>first-principles accuracy</strong>. By leveraging <strong>HPC</strong>, it allows large-scale material and molecular modeling.</p>
 
                                 
                                 </section>
@@ -368,14 +406,10 @@ opt.run(fmax=<span class="hljs-number">0.05</span>, steps=<span class="hljs-numb
 
             
                 
-                <a href="../m3gnet/" class="navigation navigation-prev " aria-label="Previous page: M3GNet">
+                <a href="../ocp/training.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: Fine-tuning">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
-                
-                <a href="../mattersim/" class="navigation navigation-next " aria-label="Next page: Mattersim">
-                    <i class="fa fa-angle-right"></i>
-                </a>
                 
             
         
@@ -384,7 +418,7 @@ opt.run(fmax=<span class="hljs-number">0.05</span>, steps=<span class="hljs-numb
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"CHGNet","level":"1.3","depth":1,"next":{"title":"Mattersim","level":"1.4","depth":1,"path":"mattersim/README.md","ref":"./mattersim/README.md","articles":[]},"previous":{"title":"M3GNet","level":"1.2","depth":1,"path":"m3gnet/README.md","ref":"./m3gnet/README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"chgnet/README.md","mtime":"2025-04-09T08:08:45.690Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T03:54:36.431Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"DeepMD-kit","level":"1.9","depth":1,"previous":{"title":"Fine-tuning","level":"1.8.3","depth":2,"path":"ocp/training.md","ref":"./ocp/training.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"deepmd-kit/README.md","mtime":"2025-02-04T15:27:27.450Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T03:54:36.431Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
