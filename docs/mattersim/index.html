@@ -295,7 +295,83 @@
     
                                 <section class="normal markdown-section">
                                 
-                                
+                                <h1 id="mattersim">MatterSim</h1>
+<ul>
+<li><strong>MatterSim</strong> is a deep learning atomistic model capable of simulating materials across a range of elements, temperatures, and pressures.</li>
+<li>GitHub Repository: <a href="https://github.com/microsoft/mattersim" target="_blank">https://github.com/microsoft/mattersim</a></li>
+</ul>
+<h2 id="installation">Installation</h2>
+<h3 id="prerequisites">Prerequisites</h3>
+<ul>
+<li><strong>Python &#x2265; 3.9</strong> is required (although MatterSim works with later versions, for optimal compatibility Python 3.9 is recommended).</li>
+</ul>
+<h3 id="conda-environment-recommended">Conda Environment (Recommended)</h3>
+<p>For a clean installation, create and activate a conda environment:</p>
+<pre><code class="lang-bash">conda create -n mattersim python=3.9
+conda activate mattersim
+</code></pre>
+<h3 id="install-from-pypi">Install from PyPI</h3>
+<p>Install MatterSim using pip:</p>
+<pre><code class="lang-bash">pip install mattersim
+</code></pre>
+<p><em>Tip:</em> Downloading dependencies may take some time.</p>
+<p>To install the latest development version directly from GitHub:</p>
+<pre><code class="lang-bash">pip install git+https://github.com/microsoft/mattersim.git
+</code></pre>
+<h3 id="install-from-source">Install from Source</h3>
+<p>Clone the repository and install using mamba (recommended for faster dependency resolution):</p>
+<pre><code class="lang-bash">git <span class="hljs-built_in">clone</span> git@github.com:microsoft/mattersim.git
+<span class="hljs-built_in">cd</span> mattersim
+mamba env create <span class="hljs-_">-f</span> environment.yaml
+mamba activate mattersim
+pip install <span class="hljs-_">-e</span> .
+</code></pre>
+<h2 id="pretrained-models">Pretrained Models</h2>
+<p>MatterSim offers two pre-trained MatterSim-v1 models (based on the M3GNet architecture) located in the <code>pretrained_models</code> folder:</p>
+<ul>
+<li><strong>MatterSim-v1.0.0-1M:</strong> A mini version that is faster to run.</li>
+<li><strong>MatterSim-v1.0.0-5M:</strong> A larger version that provides more accuracy.</li>
+</ul>
+<p>By default, the 1M version is loaded. To switch to the 5M version, set the <code>load_path</code> parameter in the MatterSim calculator accordingly.</p>
+<h2 id="usage">Usage</h2>
+<h3 id="basic-example">Basic Example</h3>
+<p>The following minimal code demonstrates how to perform a simple calculation with MatterSim:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">import</span> torch
+<span class="hljs-keyword">from</span> loguru <span class="hljs-keyword">import</span> logger
+<span class="hljs-keyword">from</span> ase.build <span class="hljs-keyword">import</span> bulk
+<span class="hljs-keyword">from</span> ase.units <span class="hljs-keyword">import</span> GPa
+<span class="hljs-keyword">from</span> mattersim.forcefield <span class="hljs-keyword">import</span> MatterSimCalculator
+
+device = <span class="hljs-string">&quot;cuda&quot;</span> <span class="hljs-keyword">if</span> torch.cuda.is_available() <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;cpu&quot;</span>
+logger.info(f<span class="hljs-string">&quot;Running MatterSim on {device}&quot;</span>)
+
+<span class="hljs-comment"># Create an ASE atoms object for silicon in diamond structure</span>
+si = bulk(<span class="hljs-string">&quot;Si&quot;</span>, <span class="hljs-string">&quot;diamond&quot;</span>, a=<span class="hljs-number">5.43</span>)
+si.calc = MatterSimCalculator(device=device)
+
+logger.info(f<span class="hljs-string">&quot;Energy (eV)                 = {si.get_potential_energy()}&quot;</span>)
+logger.info(f<span class="hljs-string">&quot;Energy per atom (eV/atom)   = {si.get_potential_energy()/len(si)}&quot;</span>)
+logger.info(f<span class="hljs-string">&quot;Forces of first atom (eV/A) = {si.get_forces()[0]}&quot;</span>)
+logger.info(f<span class="hljs-string">&quot;Stress[0][0] (eV/A^3)       = {si.get_stress(voigt=False)[0][0]}&quot;</span>)
+logger.info(f<span class="hljs-string">&quot;Stress[0][0] (GPa)          = {si.get_stress(voigt=False)[0][0] / GPa}&quot;</span>)
+</code></pre>
+<h3 id="switching-pretrained-models">Switching Pretrained Models</h3>
+<p>To load the MatterSim-v1.0.0-5M checkpoint, update the calculator as follows:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> mattersim.forcefield <span class="hljs-keyword">import</span> MatterSimCalculator
+
+<span class="hljs-comment"># Provide the alternate load path for the 5M version</span>
+calc = MatterSimCalculator(load_path=<span class="hljs-string">&quot;MatterSim-v1.0.0-5M.pth&quot;</span>, device=device)
+</code></pre>
+<h3 id="note-for-macos-users">Note for macOS Users</h3>
+<p>If you&#x2019;re on macOS with Apple Silicon, numerical instability with the MPS backend may occur. It is recommended to run MatterSim on the CPU on these systems.</p>
+<h2 id="finetuning">Finetuning</h2>
+<p>MatterSim provides a finetuning script that allows you to refine the pre-trained model on your custom dataset (formatted as an ASE SQLite database). For example:</p>
+<pre><code class="lang-bash">torchrun --nproc_per_node=1 src/mattersim/training/finetune_mattersim.py \
+    --load_model_path mattersim-v1.0.0-1m \
+    --train_data_path tests/data/high_level_water.xyz
+</code></pre>
+<p>For more details on finetuning, please refer to the MatterSim documentation.</p>
+
                                 
                                 </section>
                             
@@ -338,7 +414,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Mattersim","level":"1.4","depth":1,"next":{"title":"SevenNet","level":"1.5","depth":1,"path":"sevennet/README.md","ref":"./sevennet/README.md","articles":[]},"previous":{"title":"CHGNet","level":"1.3","depth":1,"path":"chgnet/README.md","ref":"./chgnet/README.md","articles":[]},"dir":"neutral"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"mattersim/README.md","mtime":"2025-04-09T13:28:27.541Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T04:21:01.753Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"Mattersim","level":"1.4","depth":1,"next":{"title":"SevenNet","level":"1.5","depth":1,"path":"sevennet/README.md","ref":"./sevennet/README.md","articles":[]},"previous":{"title":"CHGNet","level":"1.3","depth":1,"path":"chgnet/README.md","ref":"./chgnet/README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"mattersim/README.md","mtime":"2025-04-10T04:23:36.220Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T04:23:44.421Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
