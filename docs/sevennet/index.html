@@ -295,7 +295,109 @@
     
                                 <section class="normal markdown-section">
                                 
-                                
+                                <h1 id="sevennet">SevenNet</h1>
+<ul>
+<li><strong>SevenNet</strong> (Scalable EquiVariance-Enabled Neural Network) is a graph neural network (GNN)-based interatomic potential package. It supports efficient atomistic simulations&#x2014;including parallel molecular dynamics (MD) with LAMMPS&#x2014;using pretrained models and a fine-tuning interface.</li>
+<li>GitHub Repository: <a href="https://github.com/MDIL-SNU/SevenNet" target="_blank">https://github.com/MDIL-SNU/SevenNet</a></li>
+</ul>
+<h2 id="installation">Installation</h2>
+<h3 id="requirements">Requirements</h3>
+<ul>
+<li><strong>Python &#x2265; 3.8</strong></li>
+<li><strong>PyTorch &#x2265; 1.12.0</strong> (recommended versions used internally include PyTorch 2.2.2 + CUDA 12.1.0, PyTorch 1.13.1 + CUDA 12.1.0, or PyTorch 1.12.0 + CUDA 11.6.2)</li>
+</ul>
+<blockquote>
+<p><strong>Important:</strong> Install PyTorch manually according to your hardware before installing SevenNet.</p>
+</blockquote>
+<h3 id="installing-sevennet">Installing SevenNet</h3>
+<p>To install via pip:</p>
+<pre><code class="lang-bash">pip install sevenn
+</code></pre>
+<p>For the latest development version from GitHub:</p>
+<pre><code class="lang-bash">pip install git+https://github.com/MDIL-SNU/SevenNet.git
+</code></pre>
+<p>Make sure to consult SevenNet GitHub Repository for new features and updates, as SevenNet is under active development.</p>
+<h2 id="usage">Usage</h2>
+<h3 id="using-the-ase-calculator">Using the ASE Calculator</h3>
+<p>SevenNet provides an ASE interface through its calculator. Here are two common usage examples:</p>
+<h4 id="basic-ase-calculator">Basic ASE Calculator</h4>
+<p>Load a pretrained SevenNet model using a specified keyword and, if applicable, a modality (e.g., <code>mpa</code> or <code>omat24</code>):</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> sevenn.calculator <span class="hljs-keyword">import</span> SevenNetCalculator
+
+<span class="hljs-comment"># Load a multi-fidelity model (using modal=&apos;mpa&apos; or &apos;omat24&apos; based on training DFT settings)</span>
+calc = SevenNetCalculator(model=<span class="hljs-string">&apos;7net-mf-ompa&apos;</span>, modal=<span class="hljs-string">&apos;mpa&apos;</span>)
+</code></pre>
+<h4 id="using-cuda-accelerated-d3-calculations">Using CUDA-accelerated D3 Calculations</h4>
+<p>For dispersion-corrected calculations with GPU acceleration:</p>
+<pre><code class="lang-python"><span class="hljs-keyword">from</span> sevenn.calculator <span class="hljs-keyword">import</span> SevenNetD3Calculator
+
+<span class="hljs-comment"># Replace &apos;7net-0&apos; with the desired model keyword and specify device</span>
+calc = SevenNetD3Calculator(model=<span class="hljs-string">&apos;7net-0&apos;</span>, device=<span class="hljs-string">&apos;cuda&apos;</span>)
+</code></pre>
+<p><em>Tip:</em> When the device is set to <code>&apos;auto&apos;</code>, SevenNet will use GPU acceleration if available.</p>
+<h3 id="command-line-interface-for-training--inference">Command-line Interface for Training &amp; Inference</h3>
+<p>SevenNet offers multiple CLI commands for managing preprocessing, training, inference, and model deployment:</p>
+<ol>
+<li><p><strong>Input Generation</strong><br>Use <code>sevenn_preset</code> to generate an input YAML file:</p>
+<pre><code class="lang-bash">sevenn_preset base &gt; input.yaml
+</code></pre>
+<p>Preset keywords include <code>base</code>, <code>fine_tune</code>, <code>multi_modal</code>, <code>sevennet-0</code>, and <code>sevennet-l3i5</code>.</p>
+</li>
+<li><p><strong>Preprocessing</strong> (Optional)<br>Preprocess your dataset with:</p>
+<pre><code class="lang-bash">sevenn_graph_build {dataset_path} {cutoff_radius}
+</code></pre>
+<p>This creates preprocessed files (e.g., <code>sevenn_data/graph.pt</code>) that can speed up training and inference.</p>
+</li>
+<li><p><strong>Training</strong><br>With your <code>input.yaml</code> and preprocessed data ready, start training:</p>
+<pre><code class="lang-bash">sevenn input.yaml <span class="hljs-_">-s</span>
+</code></pre>
+<p>For multi-GPU training using PyTorch DDP:</p>
+<pre><code class="lang-bash">torchrun --standalone --nnodes {nodes} --nproc_per_node {GPUs} --no_python sevenn input.yaml <span class="hljs-_">-d</span>
+</code></pre>
+<p><em>(Note: <code>batch_size</code> in <code>input.yaml</code> is per GPU.)</em></p>
+</li>
+<li><p><strong>Inference</strong><br>Use the trained checkpoint to predict energies, forces, and stresses:</p>
+<pre><code class="lang-bash">sevenn_inference checkpoint_best.pth path_to_structures/*
+</code></pre>
+<p>Results are saved in the <code>sevenn_infer_result</code> directory.</p>
+</li>
+<li><p><strong>Deployment for LAMMPS</strong><br>Deploy a model as a LAMMPS potential:</p>
+<pre><code class="lang-bash">sevenn_get_model 7net-0
+</code></pre>
+<p>For parallel MD potentials:</p>
+<pre><code class="lang-bash">sevenn_get_model 7net-0 -p
+</code></pre>
+<p>The resulting files/directories can be used with LAMMPS&#x2019; <code>e3gnn</code> pair_style.</p>
+</li>
+</ol>
+<h2 id="md-simulation-with-lammps">MD Simulation with LAMMPS</h2>
+<p>SevenNet supports MD simulations using LAMMPS:</p>
+<ul>
+<li><p><strong>Single-GPU MD:</strong><br>Use the serial model with the <code>e3gnn</code> pair<em>style.<br>_Example Input:</em></p>
+<pre><code>units       metal
+atom_style  atomic
+pair_style  e3gnn
+pair_coeff  * * {path_to_serial_model} {chemical_species}
+</code></pre></li>
+<li><p><strong>Multi-GPU MD:</strong><br>Use the parallel model with <code>e3gnn/parallel</code> pair<em>style.<br>_Example Input:</em></p>
+<pre><code>units       metal
+atom_style  atomic
+pair_style  e3gnn/parallel
+pair_coeff  * * {num_message_layers} {directory_of_parallel_model} {chemical_species}
+</code></pre><p><em>(Ensure one GPU per MPI process is available.)</em></p>
+</li>
+</ul>
+<p>For detailed LAMMPS setup, refer to the provided scripts and documentation. A patch script (<code>sevenn_patch_lammps</code>) is available for compiling LAMMPS with SevenNet-specific modifications.</p>
+<h2 id="notebook-tutorials">Notebook Tutorials</h2>
+<p>Several Jupyter Notebook tutorials are available to help users:</p>
+<ul>
+<li><strong>From Scratch:</strong> Learn to train SevenNet from scratch, perform predictions, structure relaxations, and generate EOS curves.</li>
+<li><strong>Fine-Tuning:</strong> Fine-tune a pretrained model and compare its performance to the original model.</li>
+</ul>
+<p>To access these notebooks, clone the repository:</p>
+<pre><code class="lang-bash">git <span class="hljs-built_in">clone</span> https://github.com/MDIL-SNU/sevennet_tutorial.git
+</code></pre>
+
                                 
                                 </section>
                             
@@ -338,7 +440,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"SevenNet","level":"1.5","depth":1,"next":{"title":"MACE","level":"1.6","depth":1,"path":"mace/README.md","ref":"./mace/README.md","articles":[]},"previous":{"title":"Mattersim","level":"1.4","depth":1,"path":"mattersim/README.md","ref":"./mattersim/README.md","articles":[]},"dir":"neutral"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sevennet/README.md","mtime":"2025-04-09T13:29:01.267Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T04:23:44.421Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"SevenNet","level":"1.5","depth":1,"next":{"title":"MACE","level":"1.6","depth":1,"path":"mace/README.md","ref":"./mace/README.md","articles":[]},"previous":{"title":"Mattersim","level":"1.4","depth":1,"path":"mattersim/README.md","ref":"./mattersim/README.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sevennet/README.md","mtime":"2025-04-10T04:27:39.390Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T04:27:46.395Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
