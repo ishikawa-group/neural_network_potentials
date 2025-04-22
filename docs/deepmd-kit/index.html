@@ -311,7 +311,8 @@
 <hr>
 <h2 id="3-practical-guide"><strong>3. Practical Guide</strong></h2>
 <h3 id="31-data-preparation"><strong>3.1. Data Preparation</strong></h3>
-<p>Convert first-principles data (e.g., ABACUS MD) to DeePMD-kit format:</p>
+<p>DeePMD-kit uses a compressed NumPy-based format for efficient storage of atomic structures and properties. To convert raw simulation outputs into this format, we rely on the <strong>dpdata</strong> tool, which supports <strong>VASP</strong>, <strong>CP2K</strong>, <strong>Gaussian</strong>, <strong>Quantum Espresso</strong>, <strong>ABACUS</strong>, and <strong>LAMMPS</strong>.</p>
+<p>Convert first-principles data to DeePMD-kit format:</p>
 <pre><code class="lang-python"><span class="hljs-keyword">import</span> dpdata, numpy <span class="hljs-keyword">as</span> np
 
 data = dpdata.LabeledSystem(<span class="hljs-string">&quot;00.data/abacus_md&quot;</span>, fmt=<span class="hljs-string">&quot;abacus/md&quot;</span>)
@@ -321,6 +322,14 @@ index_train = list(set(range(len(data))) - set(index_val))
 data.sub_system(index_train).to_deepmd_npy(<span class="hljs-string">&quot;00.data/training_data&quot;</span>)
 data.sub_system(index_val).to_deepmd_npy(<span class="hljs-string">&quot;00.data/validation_data&quot;</span>)
 </code></pre>
+<p>To convert other formats, change the <code>fmt</code> argument to one of:</p>
+<ul>
+<li><code>&quot;vasp/poscar&quot;</code></li>
+<li><code>&quot;cp2k/xyz&quot;</code></li>
+<li><code>&quot;gaussian/log&quot;</code></li>
+<li><code>&quot;qe/sssp&quot;</code></li>
+<li><code>&quot;lammps/dump&quot;</code></li>
+</ul>
 <h3 id="32-training-configuration"><strong>3.2. Training Configuration</strong></h3>
 <p>Define <code>input.json</code> for training:</p>
 <pre><code class="lang-jsonc">{
@@ -418,7 +427,7 @@ run 5000
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"DeepMD-kit","level":"1.9","depth":1,"previous":{"title":"Fine-tuning","level":"1.8.3","depth":2,"path":"ocp/training.md","ref":"./ocp/training.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"deepmd-kit/README.md","mtime":"2025-02-04T15:27:27.450Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-10T04:50:14.076Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"DeepMD-kit","level":"1.9","depth":1,"previous":{"title":"Fine-tuning","level":"1.8.3","depth":2,"path":"ocp/training.md","ref":"./ocp/training.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"embedFonts":false},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"deepmd-kit/README.md","mtime":"2025-04-22T02:28:03.749Z","type":"markdown"},"gitbook":{"version":"3.6.6","time":"2025-04-22T02:53:16.067Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>
