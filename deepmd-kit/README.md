@@ -21,7 +21,9 @@ DeePMD-kit is a machine learning-based tool that fits **first-principles** (DFT)
 
 ### **3.1. Data Preparation**
 
-Convert first-principles data (e.g., ABACUS MD) to DeePMD-kit format:
+DeePMD-kit uses a compressed NumPy-based format for efficient storage of atomic structures and properties. To convert raw simulation outputs into this format, we rely on the **dpdata** tool, which supports **VASP**, **CP2K**, **Gaussian**, **Quantum Espresso**, **ABACUS**, and **LAMMPS**.
+
+Convert first-principles data to DeePMD-kit format:
 
 ```python
 import dpdata, numpy as np
@@ -33,6 +35,14 @@ index_train = list(set(range(len(data))) - set(index_val))
 data.sub_system(index_train).to_deepmd_npy("00.data/training_data")
 data.sub_system(index_val).to_deepmd_npy("00.data/validation_data")
 ```
+
+To convert other formats, change the `fmt` argument to one of:
+
+- `"vasp/poscar"`
+- `"cp2k/xyz"`
+- `"gaussian/log"`
+- `"qe/sssp"`
+- `"lammps/dump"`
 
 ### **3.2. Training Configuration**
 
